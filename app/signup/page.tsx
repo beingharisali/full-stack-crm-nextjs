@@ -7,9 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
-
-export default function Home() {
-   const router = useRouter();
+export default function SignUpPage() {
+  const router = useRouter();
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
@@ -88,7 +87,7 @@ export default function Home() {
             <p className="text-sm text-center text-gray-600">
               Already have an account?{" "}
               <Link href="/register" className="text-indigo-600 hover:underline">
-                Login 
+                Login
               </Link>
             </p>
           </form>
@@ -96,5 +95,4 @@ export default function Home() {
       </Card>
     </div>
   );
-
 }
