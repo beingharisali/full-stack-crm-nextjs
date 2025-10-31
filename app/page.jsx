@@ -105,7 +105,7 @@ export default function RegisterPage() {
               Do not have an account?{" "}
               <Link href="/register" className="text-blue-600 hover:underline">
                 {/* CORRECTED: Link to /login which is more standard than /signup */}
-                Login
+                Sign up
               </Link>
             </p>
           </form>
