@@ -37,7 +37,7 @@
     "**/*.mts",
     ".next\\dev/types/**/*.ts",
     ".next\\dev/types/**/*.ts"
-, "app/register/page.jsx", "app/signup/page.jsx", "app/page.jsx"  ],
+, "app/register/page.jsx"  ],
   "exclude": [
     "node_modules"
   ]
