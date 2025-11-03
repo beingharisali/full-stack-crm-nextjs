@@ -13,7 +13,7 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    role: "", 
+    role: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -34,10 +34,10 @@ export default function RegisterPage() {
 
     // Ensure email and role are not empty
     if (!formData.email || !formData.role) {
-       alert("Please fill in your email and select a role.");
-       return;
+      alert("Please fill in your email and select a role.");
+      return;
     }
-    
+
     // Destructure the data to send, excluding confirmPassword
     const { confirmPassword, ...dataToSend } = formData;
 
@@ -59,12 +59,13 @@ export default function RegisterPage() {
         password: "",
         confirmPassword: "",
       });
-      
-      // Redirect to login page on success
-     
 
+      // Redirect to login page on success
     } catch (err) {
-      console.error("Error occurred during registration:", err.response ? err.response.data : err.message);
+      console.error(
+        "Error occurred during registration:",
+        err.response ? err.response.data : err.message
+      );
       alert("Registration failed. Please check your details and try again.");
     }
   }
@@ -81,9 +82,11 @@ export default function RegisterPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700">First Name</label>
+              <label className="block text-sm font-medium text-gray-700">
+                First Name
+              </label>
               <Input
-                name="firstName" 
+                name="firstName"
                 type="text"
                 placeholder="John"
                 required
@@ -92,9 +95,11 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Last Name</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Last Name
+              </label>
               <Input
-                name="lastName" 
+                name="lastName"
                 type="text"
                 placeholder="Doe"
                 required
@@ -103,8 +108,10 @@ export default function RegisterPage() {
               />
             </div>
             {/* Added Email field for completeness */}
-             <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
               <Input
                 name="email"
                 type="email"
@@ -115,7 +122,9 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Password</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
               <Input
                 name="password"
                 type="password"
@@ -127,7 +136,9 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Confirm Password
+              </label>
               <Input
                 name="confirmPassword"
                 type="password"
@@ -138,15 +149,21 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-               <label className="block text-sm font-medium text-gray-700">Role</label> {/* New Label */}
+              <label className="block text-sm font-medium text-gray-700">
+                Role
+              </label>{" "}
+              {/* New Label */}
               <select
-                 name="role" // Added name and connected to state
-                 value={formData.role}
-                 onChange={handleChange}
-                 required
-                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                name="role" // Added name and connected to state
+                value={formData.role}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
               >
-                <option value="" disabled>Select Role</option> {/* Added a disabled default option */}
+                <option value="" disabled>
+                  Select Role
+                </option>{" "}
+                {/* Added a disabled default option */}
                 <option value="admin">Admin</option>
                 <option value="agent">Agent</option>
                 <option value="user">User</option>
