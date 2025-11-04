@@ -37,7 +37,7 @@
     "**/*.mts",
     ".next\\dev/types/**/*.ts",
     ".next\\dev/types/**/*.ts"
-, "app/register/page.jsx"  ],
+, "app/register/page.tsx"  ],
   "exclude": [
     "node_modules"
   ]

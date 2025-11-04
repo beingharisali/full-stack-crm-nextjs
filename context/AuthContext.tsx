@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   register as registerApi,
   login as loginApi,
-  getProfile,
+  // getProfile,
   logoutApi,
 } from "../services/auth.api";
 import type { User, UserRole } from "../types/user";
@@ -22,7 +22,7 @@ interface AuthContextType {
   ) => Promise<void>;
   loginUser: (email: string, password: string, role: UserRole) => Promise<void>;
   logoutUser: () => Promise<void>;
-  refreshProfile: () => Promise<void>;
+  // refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -51,30 +51,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const refreshProfile = async (): Promise<void> => {
-    try {
-      const res = await getProfile();
-      if (res?.user) {
-        setUser(res.user);
-      } else {
-        setUser(null);
-      }
-    } catch {
-      setUser(null);
-    }
-  };
+  // const refreshProfile = async (): Promise<void> => {
+  //   try {
+  //     const res = await getProfile();
+  //     if (res?.user) {
+  //       setUser(res.user);
+  //     } else {
+  //       setUser(null);
+  //     }
+  //   } catch {
+  //     setUser(null);
+  //   }
+  // };
 
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      const token = localStorage.getItem("token");
+  // useEffect(() => {
+  //   (async () => {
+  //     setLoading(true);
+  //     const token = localStorage.getItem("token");
 
-      if (token) {
-        await refreshProfile();
-      }
-      setLoading(false);
-    })();
-  }, []);
+  //     if (token) {
+  //       await refreshProfile();
+  //     }
+  //     setLoading(false);
+  //   })();
+  // }, []);
 
   const registerUser = async (
     firstName: string,
@@ -96,6 +96,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     setUser(res.user);
+    console.log("res.user", res);
 
     router.replace(getRedirectPath(res.user.role));
   };
@@ -125,7 +126,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         registerUser,
         loginUser,
         logoutUser,
-        refreshProfile,
+        // refreshProfile,
       }}
     >
       {children}
