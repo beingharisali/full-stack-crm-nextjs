@@ -1,53 +1,38 @@
 "use client";
 
 import { useState } from "react";
-import { useAuthContext } from "../../context/AuthContext";
+import { useAuthContext } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import axios from "axios";
 
 export default function RegisterPage() {
-	const { registerUser } = useAuthContext();
+	const { loginUser } = useAuthContext();
+	const router = useRouter();
 	const [formData, setFormData] = useState({
-		firstName: "",
-		lastName: "",
-		role: "",
 		email: "",
 		password: "",
-		confirmPassword: "",
+		role: "",
 	});
+
 	const [loading, setLoading] = useState(false);
 
 	function handleChange(
 		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
 	) {
-		const { name, value } = e.target;
-		setFormData((prev) => ({ ...prev, [name]: value }));
+		const { name, value } = e.target; // Destructuring name and value
+		setFormData((prevData) => ({ ...prevData, [name]: value }));
 	}
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
 
-		if (formData.password !== formData.confirmPassword) {
-			alert("Passwords do not match!");
-			return;
-		}
-
-		if (!formData.role) {
-			alert("Please select a role!");
-			return;
-		}
-
 		try {
 			setLoading(true);
-			await registerUser(
-				formData.firstName,
-				formData.lastName,
-				formData.email,
-				formData.password,
-				formData.role as any
-			);
+			await loginUser(formData.email, formData.password, formData.role as any);
 		} catch (error) {
 			const e = error as { response?: { data?: { msg?: string } } };
 			alert(e.response?.data?.msg || "Registration failed");
@@ -62,36 +47,13 @@ export default function RegisterPage() {
 			<Card className="w-full max-w-md shadow-2xl bg-white/90 backdrop-blur-md">
 				<CardHeader>
 					<CardTitle className="text-center text-3xl font-semibold text-gray-800">
-						Sign Up
+						Login
 					</CardTitle>
 				</CardHeader>
 
 				<CardContent>
 					<form onSubmit={handleSubmit} className="space-y-5">
-						<div>
-							<label className="block text-sm font-medium text-gray-700">
-								First Name
-							</label>
-							<Input
-								name="firstName"
-								type="text"
-								required
-								value={formData.firstName}
-								onChange={handleChange}
-							/>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700">
-								Last Name
-							</label>
-							<Input
-								name="lastName"
-								type="text"
-								required
-								value={formData.lastName}
-								onChange={handleChange}
-							/>
-						</div>
+						{/* Added Email field for completeness */}
 						<div>
 							<label className="block text-sm font-medium text-gray-700">
 								Email
@@ -99,6 +61,7 @@ export default function RegisterPage() {
 							<Input
 								name="email"
 								type="email"
+								placeholder="john.doe@example.com"
 								required
 								value={formData.email}
 								onChange={handleChange}
@@ -111,25 +74,12 @@ export default function RegisterPage() {
 							<Input
 								name="password"
 								type="password"
+								placeholder="********"
 								required
 								value={formData.password}
 								onChange={handleChange}
 							/>
 						</div>
-
-						<div>
-							<label className="block text-sm font-medium text-gray-700">
-								Confirm Password
-							</label>
-							<Input
-								name="confirmPassword"
-								type="password"
-								required
-								value={formData.confirmPassword}
-								onChange={handleChange}
-							/>
-						</div>
-
 						<div>
 							<label className="block text-sm font-medium text-gray-700">
 								Role
@@ -147,14 +97,17 @@ export default function RegisterPage() {
 							</select>
 						</div>
 
-						<Button type="submit" className="w-full" disabled={loading}>
-							{loading ? "Registering..." : "Register"}
+						<Button
+							type="submit"
+							className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium">
+							Login
 						</Button>
 
 						<p className="text-center text-sm text-gray-600">
-							Already have an account?{" "}
-							<Link href="/" className="text-blue-600 hover:underline">
-								Login
+							Do not have an account?{" "}
+							<Link href="/register" className="text-blue-600 hover:underline">
+								{/* CORRECTED: Link to /login which is more standard than /signup */}
+								Sign up
 							</Link>
 						</p>
 					</form>
