@@ -1,16 +1,9 @@
 "use client";
 import React, { useEffect, useState, useMemo } from "react";
-import { allProperties } from "../../services/property.api ";
+import { allProperties } from "../../services/property.api";
+import { Property } from "@/types/property";
 
-interface Property {
-  title: string;
-  price: number;
-  city: string;
-  _id: string;
-  createdBy: string;
-}
-
-const PROPERTIES_PER_PAGE = 12;
+const PROPERTIES_PER_PAGE = 2;
 
 export default function Page() {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -21,7 +14,8 @@ export default function Page() {
     setLoading(true);
     try {
       const response = await allProperties();
-      const data = response.property || response.properties;
+      console.log("property response", response);
+      const data = response.properties || response.properties;
       setProperties(data);
     } catch (err) {
       console.error("Error occurred in fetching data:", err);
@@ -95,7 +89,8 @@ export default function Page() {
             {currentProperties.map((property) => (
               <tr
                 key={property._id}
-                className="hover:bg-gray-50 transition duration-150">
+                className="hover:bg-gray-50 transition duration-150"
+              >
                 <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
                   {property._id}
                 </td>
@@ -126,7 +121,8 @@ export default function Page() {
               currentPage === 1
                 ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                 : "bg-indigo-600 text-white hover:bg-indigo-700"
-            }`}>
+            }`}
+          >
             Previous
           </button>
 
@@ -141,7 +137,8 @@ export default function Page() {
               currentPage === totalPages
                 ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                 : "bg-indigo-600 text-white hover:bg-indigo-700"
-            }`}>
+            }`}
+          >
             Next
           </button>
         </div>

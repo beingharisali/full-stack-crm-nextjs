@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { createProperty } from "../../../services/property.api "; // ✅ corrected import path
+import { createProperty } from "../../../services/property.api"; // ✅ corrected import path
 import { toast } from "react-toastify";
 
 export default function AddPropertyPage() {

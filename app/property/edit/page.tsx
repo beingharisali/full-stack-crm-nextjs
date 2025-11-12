@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import toast from "react-hot-toast";
-import { getSingleProperty, updateProperty } from "@/services/property.api ";
+import { getSingleProperty, updateProperty } from "@/services/property.api";
 
 export default function EditPropertyPage() {
   const router = useRouter();
@@ -22,7 +22,6 @@ export default function EditPropertyPage() {
     desc: "",
     imageURL: "",
   });
-
 
   useEffect(() => {
     async function fetchData() {
