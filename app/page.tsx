@@ -33,7 +33,7 @@ export default function RegisterPage() {
     try {
       setLoading(true);
       await loginUser(formData.email, formData.password, formData.role as any);
-      router.push("/property/add");
+      router.push("/properties");
     } catch (error) {
       const e = error as { response?: { data?: { msg?: string } } };
       alert(e.response?.data?.msg || "Registration failed");
@@ -90,7 +90,8 @@ export default function RegisterPage() {
                 required
                 value={formData.role}
                 onChange={handleChange}
-                className="mt-1 block w-full border-gray-300 rounded-md p-2">
+                className="mt-1 block w-full border-gray-300 rounded-md p-2"
+              >
                 <option value="">Select Role</option>
                 <option value="admin">Admin</option>
                 <option value="agent">Agent</option>
@@ -100,7 +101,8 @@ export default function RegisterPage() {
 
             <Button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium">
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium"
+            >
               Login
             </Button>
 
