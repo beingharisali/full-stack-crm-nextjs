@@ -2,57 +2,44 @@
 import http from "./http";
 import { Property } from "../types/property";
 
-// Create property
 export async function createProperty(
-  title: string,
-  price: number,
-  city: string,
-  createdBy: string,
-  desc: string,
-  imageURL: string
+	formData: FormData
 ): Promise<{ property: Property }> {
-  const res = await http.post("/create-property", {
-    title,
-    price,
-    city,
-    createdBy,
-    desc,
-    imageURL,
-  });
-  return res.data;
+	const res = await http.post("/create-property", formData);
+	return res.data;
 }
 
-// Get all properties
 export async function allProperties(): Promise<{ properties: Property[] }> {
-  const res = await http.get("/get-property");
-  return res.data;
+	const res = await http.get("/get-property");
+	return res.data;
 }
 
-// Get single property by ID
 export async function getSingleProperty(
-  id: string
+	id: string
 ): Promise<{ property: Property }> {
-  const res = await http.get(`/get-single-property/${id}`);
-  return res.data;
+	const res = await http.get(`/get-single-property/${id}`);
+	return res.data;
 }
 
-// Update property
 export async function updateProperty(
-  id: string,
-  updates: Partial<{
-    title: string;
-    price: number;
-    city: string;
-    desc: string;
-    imageURL: string;
-  }>
+	id: string,
+	updates: FormData | Partial<Property>
 ): Promise<{ property: Property }> {
-  const res = await http.patch(`/edit-properties/${id}`, updates);
-  return res.data;
+	const config =
+		updates instanceof FormData
+			? undefined
+			: {
+					headers: {
+						"Content-Type": "application/json",
+					},
+			  };
+
+	const res = await http.patch(`/edit-property/${id}`, updates, config);
+
+	return res.data;
 }
 
-// Delete property
 export async function deleteProperty(id: string): Promise<{ message: string }> {
-  const res = await http.delete(`/delete-property/${id}`);
-  return res.data;
+	const res = await http.delete(`/delete-property/${id}`);
+	return res.data;
 }
