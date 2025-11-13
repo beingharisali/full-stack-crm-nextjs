@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, useMemo } from "react";
 import { allProperties } from "../../services/property.api";
-import { Property } from "../../types/property";
+import { Property } from "@/types/property";
 
 const PROPERTIES_PER_PAGE = 10;
 
@@ -69,7 +69,7 @@ export default function Page() {
 					<thead className="bg-gray-50">
 						<tr>
 							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-								Image
+								IMAGE
 							</th>
 							<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 								Title
@@ -95,8 +95,8 @@ export default function Page() {
 										src={property.imageURL}
 										alt="property image"
 										style={{
-											height: "50px",
 											width: "50px",
+											height: "50px",
 										}}
 									/>
 								</td>

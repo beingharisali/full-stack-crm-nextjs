@@ -15,6 +15,7 @@ interface PropertyData {
 	city: string;
 	desc: string;
 	imageURL: string;
+	imageFile: null;
 }
 
 export default function EditPropertyPage() {
@@ -29,6 +30,7 @@ export default function EditPropertyPage() {
 		city: "",
 		desc: "",
 		imageURL: "",
+		imageFile: null,
 	});
 	const [newImageFile, setNewImageFile] = useState<File | null>(null);
 
@@ -44,6 +46,7 @@ export default function EditPropertyPage() {
 					city: res.property.city || "",
 					desc: res.property.desc || "",
 					imageURL: res.property.imageURL || "",
+					imageFile: res.property.imageFile || null,
 				});
 			} catch (error) {
 				toast.error("Failed to load property data");
