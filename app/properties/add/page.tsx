@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { createProperty } from "../../../services/property.api";
 import { toast } from "react-toastify";
-
+import Link from "next/link";
 interface PropertyState {
 	title: string;
 	price: string;
@@ -77,93 +77,100 @@ export default function AddPropertyPage() {
 		}
 	};
 	return (
-		<div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
-			<Card className="w-full max-w-lg shadow-lg rounded-2xl">
-				<CardHeader>
-					<CardTitle className="text-center text-2xl font-bold text-gray-700">
-						Add New Property
-					</CardTitle>
-				</CardHeader>
+		<>
+			<Link href={"/properties"}>
+				<button className="m-5 bg-blue-800 text-white px-3 py-2 rounded-md absolute">
+					Back
+				</button>
+			</Link>
+			<div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
+				<Card className="w-full max-w-lg shadow-lg rounded-2xl">
+					<CardHeader>
+						<CardTitle className="text-center text-2xl font-bold text-gray-700">
+							Add New Property
+						</CardTitle>
+					</CardHeader>
 
-				<CardContent>
-					<form onSubmit={handleSubmit} className="space-y-4">
-						<div>
-							<label className="font-semibold">Title</label>
-							<Input
-								name="title"
-								value={property.title}
-								onChange={handleChange}
-								placeholder="Enter property title"
-								required
-							/>
-						</div>
+					<CardContent>
+						<form onSubmit={handleSubmit} className="space-y-4">
+							<div>
+								<label className="font-semibold">Title</label>
+								<Input
+									name="title"
+									value={property.title}
+									onChange={handleChange}
+									placeholder="Enter property title"
+									required
+								/>
+							</div>
 
-						<div>
-							<label className="font-semibold">Price</label>
-							<Input
-								name="price"
-								type="number"
-								value={property.price}
-								onChange={handleChange}
-								placeholder="Enter property price"
-								required
-							/>
-						</div>
+							<div>
+								<label className="font-semibold">Price</label>
+								<Input
+									name="price"
+									type="number"
+									value={property.price}
+									onChange={handleChange}
+									placeholder="Enter property price"
+									required
+								/>
+							</div>
 
-						<div>
-							<label className="font-semibold">City</label>
-							<Input
-								name="city"
-								value={property.city}
-								onChange={handleChange}
-								placeholder="Enter city"
-								required
-							/>
-						</div>
+							<div>
+								<label className="font-semibold">City</label>
+								<Input
+									name="city"
+									value={property.city}
+									onChange={handleChange}
+									placeholder="Enter city"
+									required
+								/>
+							</div>
 
-						<div>
-							<label className="font-semibold">Description</label>
-							<Textarea
-								name="desc"
-								value={property.desc}
-								onChange={handleChange}
-								placeholder="Enter property description"
-								required
-							/>
-						</div>
+							<div>
+								<label className="font-semibold">Description</label>
+								<Textarea
+									name="desc"
+									value={property.desc}
+									onChange={handleChange}
+									placeholder="Enter property description"
+									required
+								/>
+							</div>
 
-						<div>
-							<label className="font-semibold">Property Image</label>
-							<Input
-								type="file"
-								name="image"
-								accept="image/*"
-								onChange={handleFiles}
-								required
-							/>
-							{property.imageFile && (
-								<p className="text-sm text-gray-500 mt-1">
-									Selected File: **{property.imageFile.name}**
-								</p>
-							)}
-						</div>
+							<div>
+								<label className="font-semibold">Property Image</label>
+								<Input
+									type="file"
+									name="image"
+									accept="image/*"
+									onChange={handleFiles}
+									required
+								/>
+								{property.imageFile && (
+									<p className="text-sm text-gray-500 mt-1">
+										Selected File: **{property.imageFile.name}**
+									</p>
+								)}
+							</div>
 
-						<div>
-							<label className="font-semibold">Created By</label>
-							<Input
-								name="createdBy"
-								value={property.createdBy}
-								onChange={handleChange}
-								placeholder="Enter creator name or ID"
-							/>
-						</div>
+							<div>
+								<label className="font-semibold">Created By</label>
+								<Input
+									name="createdBy"
+									value={property.createdBy}
+									onChange={handleChange}
+									placeholder="Enter creator name or ID"
+								/>
+							</div>
 
-						<Button type="submit" className="w-full mt-3" disabled={loading}>
-							{loading ? "Adding..." : "Add Property"}
-						</Button>
-					</form>
-				</CardContent>
-			</Card>
-		</div>
+							<Button type="submit" className="w-full mt-3" disabled={loading}>
+								{loading ? "Adding..." : "Add Property"}
+							</Button>
+						</form>
+					</CardContent>
+				</Card>
+			</div>
+		</>
 	);
 }
