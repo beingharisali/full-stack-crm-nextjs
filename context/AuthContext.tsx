@@ -41,11 +41,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const getRedirectPath = (role?: string) => {
 		switch (role) {
 			case "admin":
-				return "/admin/dashboard";
+				return "/properties";
 			case "agent":
-				return "/agent/dashboard";
+				return "/properties";
 			case "user":
-				return "/user/dashboard";
+				return "/properties";
 			default:
 				return "/";
 		}
