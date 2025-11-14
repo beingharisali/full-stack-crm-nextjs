@@ -2,9 +2,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { allProperties, deleteProperty } from "../../services/property.api";
 import { Property } from "@/types/property";
-import Link from "next/link";
 import Navbar from "../components/navbar";
-import toast from "react-hot-toast";
+import Sidebar from "../components/sidebar";
 
 const PROPERTIES_PER_PAGE = 10;
 
