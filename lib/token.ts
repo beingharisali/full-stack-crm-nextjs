@@ -1,3 +1,4 @@
+"use client";
 import { jwtDecode } from "jwt-decode";
 import { useCallback, useEffect, useState } from "react";
 

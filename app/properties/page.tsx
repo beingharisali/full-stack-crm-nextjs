@@ -8,6 +8,7 @@ import Sidebar from "../components/sidebar";
 import Link from "next/link";
 // import Navbar from "../components/navbar";
 import toast from "react-hot-toast";
+import ProtectedRoute from "../components/ProtectRoute";
 const PROPERTIES_PER_PAGE = 10;
 
 export default function Page() {
@@ -118,7 +119,7 @@ export default function Page() {
 	};
 
 	return (
-		<>
+		<ProtectedRoute allowedRoles={["admin"]}>
 			<div className="flex">
 				<div className="flex-1 flex flex-col">
 					<Navbar />
@@ -240,6 +241,6 @@ export default function Page() {
 					</div>
 				</div>
 			</div>
-		</>
+		</ProtectedRoute>
 	);
 }
