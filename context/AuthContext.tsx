@@ -43,9 +43,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			case "admin":
 				return "/properties";
 			case "agent":
-				return "/properties";
+				return "/properties/property";
 			case "user":
-				return "/properties";
+				return "/properties/property";
 			default:
 				return "/";
 		}

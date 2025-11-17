@@ -37,4 +37,5 @@ export async function login(
 
 export async function logoutApi(): Promise<void> {
 	localStorage.removeItem("token");
+	console.log("logged out successfully");
 }
