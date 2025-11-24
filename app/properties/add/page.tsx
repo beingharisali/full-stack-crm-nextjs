@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { createProperty } from "../../../services/property.api";
+import { allAgents } from "@/services/agent.api";
 import { toast } from "react-toastify";
 import Link from "next/link";
 interface PropertyState {
@@ -16,11 +17,13 @@ interface PropertyState {
 	desc: string;
 	createdBy: string;
 	imageFile: File | null;
+	assignedTo: string;
 }
 
 export default function AddPropertyPage() {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
+	const [agents, setAgents] = useState<{ _id: string; name: string }[]>([]);
 
 	const [property, setProperty] = useState<PropertyState>({
 		title: "",
@@ -29,7 +32,21 @@ export default function AddPropertyPage() {
 		desc: "",
 		createdBy: "",
 		imageFile: null,
+		assignedTo: "",
 	});
+
+	useEffect(() => {
+		getAgents();
+	}, []);
+
+	async function getAgents() {
+		try {
+			const res = await allAgents();
+			setAgents(res.agents || []);
+		} catch (err) {
+			console.error("Failed to load agents:", err);
+		}
+	}
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -63,15 +80,25 @@ export default function AddPropertyPage() {
 		formData.append("city", property.city);
 		formData.append("desc", property.desc);
 		formData.append("createdBy", property.createdBy || "Admin");
-		formData.append("image", property.imageFile);
+		if (property.imageFile) {
+			formData.append("images", property.imageFile);
+		}
+
+		if (property.assignedTo) {
+			formData.append("agentId", property.assignedTo);
+		}
 		try {
 			await createProperty(formData);
 			toast.success("Property created successfully!");
-			console.log("✅ Property created successfully!");
+
 			router.push("/properties");
 		} catch (error) {
 			console.error("❌ Error creating property:", error);
-			toast.error("Failed to add property. Try again.");
+			const msg =
+				(error as any)?.response?.data?.msg ||
+				(error as any)?.message ||
+				"Failed to add property. Try again.";
+			toast.error(msg);
 		} finally {
 			setLoading(false);
 		}
@@ -162,6 +189,24 @@ export default function AddPropertyPage() {
 									onChange={handleChange}
 									placeholder="Enter creator name or ID"
 								/>
+							</div>
+
+							<div>
+								<label className="font-semibold">Assign Agent</label>
+								<select
+									name="agentId"
+									value={(property as any).assignedTo}
+									onChange={(e) =>
+										setProperty({ ...property, assignedTo: e.target.value })
+									}
+									className="w-full p-2 border border-gray-300 rounded-md">
+									<option value="">None</option>
+									{agents.map((a) => (
+										<option key={a._id} value={a._id}>
+											{a.name}
+										</option>
+									))}
+								</select>
 							</div>
 
 							<Button type="submit" className="w-full mt-3" disabled={loading}>
