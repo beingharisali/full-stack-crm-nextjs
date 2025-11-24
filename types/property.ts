@@ -7,6 +7,7 @@ export interface Property {
 	imageURL: string;
 	_id: string;
 	imageFile: null;
+	assignedTo: string | null;
 }
 export interface AuthResponse {
 	property: Property;

@@ -29,16 +29,16 @@ function Sidebar() {
 							Profile
 						</Link>
 						<a
-							href="#"
+							href="/lead"
 							className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-400 hover:bg-opacity-25 rounded-2xl">
 							{/* Article icon */}
-							Article
+							Lead
 						</a>
 						<a
-							href="#"
+							href="/agent"
 							className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-400 hover:bg-opacity-25 rounded-2xl">
 							{/* Users icon */}
-							Users
+							Agents
 						</a>
 						<Link
 							href="#"

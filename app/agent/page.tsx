@@ -1,109 +1,123 @@
 "use client";
 import React, { useEffect, useState, useMemo } from "react";
-import { allProperties, deleteProperty } from "../../services/property.api";
-import { Property } from "@/types/property";
+
+import { allAgents, deleteAgent } from "@/services/agent.api";
+import { Agent } from "@/types/agent";
 import { useTokenData } from "@/lib/token";
 import Navbar from "../components/navbar";
 import Sidebar from "../components/sidebar";
 import Link from "next/link";
 import toast from "react-hot-toast";
-const PROPERTIES_PER_PAGE = 10;
 
-export default function Page() {
-	const [properties, setProperties] = useState<Property[]>([]);
+const AGENTS_PER_PAGE = 10;
+
+export default function AgentListPage() {
+	const [agents, setAgents] = useState<Agent[]>([] as Agent[]);
 	const [loading, setLoading] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [tokenData, tokenLoading] = useTokenData();
-	console.log(loading, properties, tokenData, tokenLoading);
 
-	async function getProperties() {
+	async function getAgents() {
 		setLoading(true);
 		try {
-			const response = await allProperties();
-			console.log("property response", response);
-			const data = response.properties || response.properties;
-			setProperties(data);
+			const response = await allAgents();
+			const data = response.agents || [];
+			console.log(data);
+			setAgents(data);
 		} catch (err) {
-			console.error("Error occurred in fetching data:", err);
+			console.error("Error occurred in fetching agent data:", err);
+			toast.error("Failed to fetch agent listings.");
 		} finally {
 			setLoading(false);
 		}
 	}
 
 	useEffect(() => {
-		getProperties();
+		getAgents();
 	}, []);
 
-	const totalPages = Math.ceil(properties.length / PROPERTIES_PER_PAGE);
+	const totalPages = Math.ceil(agents.length / AGENTS_PER_PAGE);
 
-	const currentProperties = useMemo(() => {
-		const startIndex = (currentPage - 1) * PROPERTIES_PER_PAGE;
-		const endIndex = startIndex + PROPERTIES_PER_PAGE;
-		return properties.slice(startIndex, endIndex);
-	}, [properties, currentPage]);
+	const currentAgents = useMemo(() => {
+		const startIndex = (currentPage - 1) * AGENTS_PER_PAGE;
+		const endIndex = startIndex + AGENTS_PER_PAGE;
+		return agents.slice(startIndex, endIndex);
+	}, [agents, currentPage]);
 
 	const handlePageChange = (page: number) => {
 		if (page > 0 && page <= totalPages) {
 			setCurrentPage(page);
 		}
 	};
-	if (tokenLoading === false) {
-		if (tokenData?.role !== "admin") {
-			return (
-				<>
-					<Navbar />
-					<div className="h-full flex items-center justify-center ">
-						<h1 className="text-3xl">Only Admin can access this page</h1>
-					</div>
-				</>
-			);
+
+	const deleteAgentHandler = async (id: string) => {
+		const isConfirmed = window.confirm(
+			"Are you sure you want to delete this agent? This action is irreversible."
+		);
+		if (isConfirmed) {
+			try {
+				await deleteAgent(id);
+				setAgents((prevAgents) =>
+					prevAgents.filter((agent) => id !== agent._id)
+				);
+				if (currentAgents.length === 1 && currentPage > 1) {
+					setCurrentPage(currentPage - 1);
+				}
+				toast.success("Agent deleted successfully");
+			} catch (error) {
+				console.error("Error occurred in deleting agent", error);
+				toast.error("Failed to delete agent");
+			}
 		}
-	}
-	if (loading) {
+	};
+
+	if (tokenLoading) {
 		return (
 			<div className="text-center p-8 text-xl font-semibold text-gray-500">
-				Loading properties...
+				Verifying permissions...
 			</div>
 		);
 	}
 
-	if (properties.length === 0) {
+	if (tokenData?.role !== "admin") {
+		return (
+			<>
+				<Navbar />
+				<div className="h-full flex items-center justify-center ">
+					<h1 className="text-3xl">Only Admin can access this page</h1>
+				</div>
+			</>
+		);
+	}
+
+	if (loading) {
+		return (
+			<div className="text-center p-8 text-xl font-semibold text-gray-500">
+				Loading agents...
+			</div>
+		);
+	}
+
+	if (agents.length === 0) {
 		return (
 			<>
 				<Navbar />
 				<div className="flex justify-between m-5">
 					<h1 className="text-3xl font-bold mb-6 text-gray-800">
-						Property Listings
+						Agent Listings
 					</h1>
-					<Link href="/properties/add">
+					<Link href="/agent/create">
 						<button className="p-3 text-[20px] rounded-2xl bg-blue-700 cursor-pointer hover:bg-blue-800 text-white active:bg-blue-500">
-							Create Property
+							Create Agent
 						</button>
 					</Link>
 				</div>
 				<div className="text-center p-8 text-xl font-semibold text-gray-700">
-					No properties found.
+					No agents found.
 				</div>
 			</>
 		);
 	}
-	const deleteProp = async (id: string) => {
-		const isConfirmed = window.confirm(
-			"Are you sure you want to delete your property?"
-		);
-		if (isConfirmed) {
-			try {
-				await deleteProperty(id);
-				setProperties((prevProperties) =>
-					prevProperties.filter((property) => id !== property._id)
-				);
-				toast.success("Property deleted successfully");
-			} catch (error) {
-				console.log("Error occurred in deleting property", error);
-				toast.error("Failed to delete property");
-			}
-		}
-	};
 
 	return (
 		<div className="flex">
@@ -111,14 +125,14 @@ export default function Page() {
 				<Navbar />
 				<div className="flex mx-3">
 					<Sidebar />
-					<div className="p-4 md:p-8 w-[80%]">
-						<div className="flex justify-between">
-							<h1 className="text-3xl font-bold mb-6 text-gray-800">
-								Property Listings
+					<div className="p-4 md:p-8 w-full md:w-[80%]">
+						<div className="flex justify-between items-center mb-6">
+							<h1 className="text-3xl font-bold text-gray-800">
+								Agent Listings 👨‍💼
 							</h1>
-							<Link href="/properties/add">
+							<Link href="/agent/create">
 								<button className="p-3 text-[20px] rounded-2xl bg-blue-700 cursor-pointer hover:bg-blue-800 text-white active:bg-blue-500">
-									Create Property
+									Create Agent
 								</button>
 							</Link>
 						</div>
@@ -128,63 +142,46 @@ export default function Page() {
 								<thead className="bg-gray-50">
 									<tr>
 										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-											IMAGE
+											Name
 										</th>
 										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-											Title
+											Email
 										</th>
 										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-											Price
+											Assigned Properties
 										</th>
 										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-											City
-										</th>
-										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-											Created By (ID)
-										</th>
-										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-											Edit / Delete
+											Actions
 										</th>
 									</tr>
 								</thead>
 								<tbody className="divide-y divide-gray-200">
-									{currentProperties.map((property) => (
+									{currentAgents.map((agent) => (
 										<tr
-											key={property._id}
+											key={agent._id}
 											className="hover:bg-gray-50 transition duration-150">
-											<td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
-												<img
-													src={property.imageURL}
-													alt="property image"
-													style={{
-														width: "50px",
-														height: "50px",
-													}}
-												/>
-											</td>
 											<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-												{property.title}
+												{agent.name}
 											</td>
 											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-												${property.price.toLocaleString()}
+												{agent.email}
 											</td>
-											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-												{property.city}
+											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
+												{/* FIX: Display the count of assigned properties */}
+												{agent.assignedProperties &&
+												agent.assignedProperties.length > 0
+													? `${agent.assignedProperties.length} Properties assigned`
+													: "None"}
 											</td>
 											<td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
-												{property.createdBy}
-											</td>
-											<td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
-												<Link href={`/properties/${property._id}/edit`}>
-													<button className="text-white text-[15px] bg-blue-700 rounded-md p-2 m-2 border-none	cursor-pointer active:bg-blue-600 hover:bg-blue-500">
+												<Link href={`/agents/${agent._id}/edit`}>
+													<button className="text-white text-[15px] bg-blue-700 rounded-md p-2 m-1 border-none cursor-pointer active:bg-blue-600 hover:bg-blue-500">
 														Edit
 													</button>
 												</Link>
 												<button
-													onClick={() => {
-														deleteProp(property._id);
-													}}
-													className="text-white text-[15px] bg-red-600 rounded-md p-2 m-2 border-none	cursor-pointer active:bg-red-600 hover:bg-red-500">
+													onClick={() => deleteAgentHandler(agent._id)}
+													className="text-white text-[15px] bg-red-600 rounded-md p-2 m-1 border-none cursor-pointer active:bg-red-600 hover:bg-red-500">
 													Delete
 												</button>
 											</td>
@@ -194,6 +191,7 @@ export default function Page() {
 							</table>
 						</div>
 
+						{/* Pagination Controls */}
 						{totalPages > 1 && (
 							<div className="flex justify-between items-center mt-6 p-4 bg-white rounded-lg shadow-md">
 								<button
