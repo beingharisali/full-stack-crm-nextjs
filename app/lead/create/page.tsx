@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { createLead, updateLead, getSingleLead } from "@/services/lead.api";
 import { allProperties } from "@/services/property.api";
 import { Input } from "@/components/ui/input";
@@ -24,7 +24,7 @@ import {
 	Home,
 } from "lucide-react";
 
-export default function CreateLeadPage() {
+function CreateLeadForm() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const idFromQuery = searchParams?.get("id") || undefined;
@@ -294,5 +294,21 @@ export default function CreateLeadPage() {
 				</div>
 			</div>
 		</div>
+	);
+}
+
+export default function CreateLeadPage() {
+	return (
+		<Suspense
+			fallback={
+				<div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 py-8 px-4 flex items-center justify-center">
+					<div className="flex items-center gap-2 text-slate-600">
+						<Loader2 className="h-5 w-5 animate-spin" />
+						<span>Loading...</span>
+					</div>
+				</div>
+			}>
+			<CreateLeadForm />
+		</Suspense>
 	);
 }

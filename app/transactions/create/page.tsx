@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
 	createTransaction,
@@ -16,7 +16,7 @@ import { allAgents } from "@/services/agent.api";
 import { allProperties } from "@/services/property.api";
 import { useTokenData } from "@/lib/token";
 
-export default function TransactionForm() {
+function TransactionFormContent() {
 	const [tokenData] = useTokenData();
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -282,5 +282,20 @@ export default function TransactionForm() {
 				</div>
 			</form>
 		</div>
+	);
+}
+
+export default function TransactionForm() {
+	return (
+		<Suspense
+			fallback={
+				<div className="p-6 max-w-2xl mx-auto">
+					<div className="text-center py-10">
+						<p>Loading...</p>
+					</div>
+				</div>
+			}>
+			<TransactionFormContent />
+		</Suspense>
 	);
 }
