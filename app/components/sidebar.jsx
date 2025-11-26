@@ -16,12 +16,12 @@ function Sidebar() {
 						</a>
 					</div>
 					<div className="flex flex-col flex-1 gap-3">
-						<a
-							href="#"
+						<Link
+							href="/properties"
 							className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-400 hover:bg-opacity-25 rounded-2xl">
-							{/* Home icon */}
-							Home
-						</a>
+							{/* Comments icon */}
+							Properties
+						</Link>
 						<Link
 							href="/profile"
 							className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-400 hover:bg-opacity-25 rounded-2xl">
@@ -41,10 +41,10 @@ function Sidebar() {
 							Agents
 						</a>
 						<Link
-							href="#"
+							href="/transactions"
 							className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-400 hover:bg-opacity-25 rounded-2xl">
 							{/* Comments icon */}
-							Comments
+							Transaction
 						</Link>
 					</div>
 				</nav>
