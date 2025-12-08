@@ -182,7 +182,7 @@ export default function TransactionsPage() {
 											</td>
 											<td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
 												<Link
-													href={`/transaction?id=${t._id || (t as any).id}`}>
+													href={`/transactions/create?id=${t._id || (t as any).id}`}>
 													<button className="text-white text-[15px] bg-blue-700 rounded-md p-2 m-2 hover:bg-blue-500 active:bg-blue-600">
 														Edit
 													</button>
