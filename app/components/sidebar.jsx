@@ -1,4 +1,3 @@
-// components/sidebar.tsx
 import Link from "next/link";
 import React from "react";
 
@@ -11,7 +10,6 @@ function Sidebar() {
 						<a
 							href="#"
 							className="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700">
-							{/* Dashboard icon */}
 							Dashboard
 						</a>
 					</div>
@@ -19,31 +17,26 @@ function Sidebar() {
 						<a
 							href="#"
 							className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-400 hover:bg-opacity-25 rounded-2xl">
-							{/* Home icon */}
 							Home
 						</a>
 						<Link
 							href="/profile"
 							className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-400 hover:bg-opacity-25 rounded-2xl">
-							{/* Profile icon */}
 							Profile
 						</Link>
 						<a
 							href="/lead"
 							className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-400 hover:bg-opacity-25 rounded-2xl">
-							{/* Article icon */}
 							Lead
 						</a>
 						<a
 							href="/agent"
 							className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-400 hover:bg-opacity-25 rounded-2xl">
-							{/* Users icon */}
 							Agents
 						</a>
 						<Link
 							href="#"
 							className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-400 hover:bg-opacity-25 rounded-2xl">
-							{/* Comments icon */}
 							Comments
 						</Link>
 					</div>

@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function RegisterPage() {
 	const { registerUser } = useAuthContext();
@@ -30,12 +31,12 @@ export default function RegisterPage() {
 		e.preventDefault();
 
 		if (formData.password !== formData.confirmPassword) {
-			alert("Passwords do not match!");
+			toast.error("Passwords do not match!");
 			return;
 		}
 
 		if (!formData.role) {
-			alert("Please select a role!");
+			toast.error("Please select a role!");
 			return;
 		}
 
@@ -50,8 +51,11 @@ export default function RegisterPage() {
 			);
 		} catch (error) {
 			const e = error as { response?: { data?: { msg?: string } } };
-			alert(e.response?.data?.msg || "Registration failed");
-			console.error("Registration failed:", error);
+			const errorMsg = e.response?.data?.msg || "Registration failed";
+			toast.error(errorMsg);
+			if (process.env.NODE_ENV !== "production") {
+				console.error("Registration failed:", error);
+			}
 		} finally {
 			setLoading(false);
 		}

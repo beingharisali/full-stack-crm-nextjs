@@ -8,6 +8,7 @@ import Navbar from "../components/navbar";
 import Sidebar from "../components/sidebar";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import ProtectedRoute from "../components/ProtectRoute";
 
 const AGENTS_PER_PAGE = 10;
 
@@ -22,10 +23,14 @@ export default function AgentListPage() {
 		try {
 			const response = await allAgents();
 			const data = response.agents || [];
-			console.log(data);
+			if (process.env.NODE_ENV !== "production") {
+				console.log(data);
+			}
 			setAgents(data);
 		} catch (err) {
-			console.error("Error occurred in fetching agent data:", err);
+			if (process.env.NODE_ENV !== "production") {
+				console.error("Error occurred in fetching agent data:", err);
+			}
 			toast.error("Failed to fetch agent listings.");
 		} finally {
 			setLoading(false);
@@ -65,9 +70,33 @@ export default function AgentListPage() {
 				}
 				toast.success("Agent deleted successfully");
 			} catch (error) {
-				console.error("Error occurred in deleting agent", error);
+				if (process.env.NODE_ENV !== "production") {
+					console.error("Error occurred in deleting agent", error);
+				}
 				toast.error("Failed to delete agent");
 			}
+		}
+	};
+
+	const handleDeactivateAgent = async (id: string) => {
+		try {
+			toast.error("Deactivate functionality not implemented yet");
+		} catch (error) {
+			if (process.env.NODE_ENV !== "production") {
+				console.error("Error deactivating agent:", error);
+			}
+			toast.error("Failed to deactivate agent");
+		}
+	};
+
+	const handleActivateAgent = async (id: string) => {
+		try {
+			toast.error("Activate functionality not implemented yet");
+		} catch (error) {
+			if (process.env.NODE_ENV !== "production") {
+				console.error("Error activating agent:", error);
+			}
+			toast.error("Failed to activate agent");
 		}
 	};
 
@@ -120,110 +149,115 @@ export default function AgentListPage() {
 	}
 
 	return (
-		<div className="flex">
-			<div className="flex-1 flex flex-col">
-				<Navbar />
-				<div className="flex mx-3">
-					<Sidebar />
-					<div className="p-4 md:p-8 w-full md:w-[80%]">
-						<div className="flex justify-between items-center mb-6">
-							<h1 className="text-3xl font-bold text-gray-800">
-								Agent Listings 👨‍💼
-							</h1>
-							<Link href="/agent/create">
-								<button className="p-3 text-[20px] rounded-2xl bg-blue-700 cursor-pointer hover:bg-blue-800 text-white active:bg-blue-500">
-									Create Agent
-								</button>
-							</Link>
-						</div>
-
-						<div className="overflow-x-auto shadow-xl rounded-lg">
-							<table className="min-w-full bg-white divide-y divide-gray-200">
-								<thead className="bg-gray-50">
-									<tr>
-										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-											Name
-										</th>
-										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-											Email
-										</th>
-										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-											Assigned Properties
-										</th>
-										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-											Actions
-										</th>
-									</tr>
-								</thead>
-								<tbody className="divide-y divide-gray-200">
-									{currentAgents.map((agent) => (
-										<tr
-											key={agent._id}
-											className="hover:bg-gray-50 transition duration-150">
-											<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-												{agent.name}
-											</td>
-											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-												{agent.email}
-											</td>
-											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
-												{/* FIX: Display the count of assigned properties */}
-												{agent.assignedProperties &&
-												agent.assignedProperties.length > 0
-													? `${agent.assignedProperties.length} Properties assigned`
-													: "None"}
-											</td>
-											<td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
-												<Link href={`/agents/${agent._id}/edit`}>
-													<button className="text-white text-[15px] bg-blue-700 rounded-md p-2 m-1 border-none cursor-pointer active:bg-blue-600 hover:bg-blue-500">
-														Edit
-													</button>
-												</Link>
-												<button
-													onClick={() => deleteAgentHandler(agent._id)}
-													className="text-white text-[15px] bg-red-600 rounded-md p-2 m-1 border-none cursor-pointer active:bg-red-600 hover:bg-red-500">
-													Delete
-												</button>
-											</td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-						</div>
-
-						{/* Pagination Controls */}
-						{totalPages > 1 && (
-							<div className="flex justify-between items-center mt-6 p-4 bg-white rounded-lg shadow-md">
-								<button
-									onClick={() => handlePageChange(currentPage - 1)}
-									disabled={currentPage === 1}
-									className={`px-4 py-2 text-sm font-medium rounded-lg transition duration-150 ${
-										currentPage === 1
-											? "bg-gray-200 text-gray-500 cursor-not-allowed"
-											: "bg-indigo-600 text-white hover:bg-indigo-700"
-									}`}>
-									Previous
-								</button>
-
-								<span className="text-sm text-gray-700">
-									Page **{currentPage}** of **{totalPages}**
-								</span>
-
-								<button
-									onClick={() => handlePageChange(currentPage + 1)}
-									disabled={currentPage === totalPages}
-									className={`px-4 py-2 text-sm font-medium rounded-lg transition duration-150 ${
-										currentPage === totalPages
-											? "bg-gray-200 text-gray-500 cursor-not-allowed"
-											: "bg-indigo-600 text-white hover:bg-indigo-700"
-									}`}>
-									Next
-								</button>
+		<ProtectedRoute allowedRoles={["admin"]}>
+			<div className="flex">
+				<div className="flex-1 flex flex-col">
+					<Navbar />
+					<div className="flex mx-3">
+						<Sidebar />
+						<div className="p-4 md:p-8 w-full md:w-[80%]">
+							<div className="flex justify-between items-center mb-6">
+								<h1 className="text-3xl font-bold text-gray-800">
+									Agent Listings 👨‍💼
+								</h1>
+								<Link href="/agent/create">
+									<button className="p-3 text-[20px] rounded-2xl bg-blue-700 cursor-pointer hover:bg-blue-800 text-white active:bg-blue-500">
+										Create Agent
+									</button>
+								</Link>
 							</div>
-						)}
+
+							<div className="overflow-x-auto shadow-xl rounded-lg">
+								<table className="min-w-full bg-white divide-y divide-gray-200">
+									<thead className="bg-gray-50">
+										<tr>
+											<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+												Name
+											</th>
+											<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+												Email
+											</th>
+											<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+												Assigned Properties
+											</th>
+											<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+												Actions
+											</th>
+										</tr>
+									</thead>
+									<tbody className="divide-y divide-gray-200">
+										{currentAgents.map((agent) => (
+											<tr
+												key={agent._id}
+												className="hover:bg-gray-50 transition duration-150">
+												<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+													{agent.name}
+												</td>
+												<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+													{agent.email}
+												</td>
+												<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
+													{agent.assignedProperties &&
+													agent.assignedProperties.length > 0
+														? `${agent.assignedProperties.length} Properties assigned`
+														: "None"}
+												</td>
+												<td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+													<button
+														onClick={() => toast.error("Agent activation/deactivation not implemented")}
+														className="text-white text-[15px] bg-orange-600 rounded-md p-2 m-1 border-none cursor-pointer active:bg-orange-700 hover:bg-orange-500">
+														Activate/Deactivate
+													</button>
+													<Link href={`/agents/${agent._id}/edit`}>
+														<button className="text-white text-[15px] bg-blue-700 rounded-md p-2 m-1 border-none cursor-pointer active:bg-blue-600 hover:bg-blue-500">
+															Edit
+														</button>
+													</Link>
+													<button
+														onClick={() => deleteAgentHandler(agent._id)}
+														className="text-white text-[15px] bg-red-600 rounded-md p-2 m-1 border-none cursor-pointer active:bg-red-600 hover:bg-red-500">
+														Delete
+													</button>
+												</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
+
+							{totalPages > 1 && (
+								<div className="flex justify-between items-center mt-6 p-4 bg-white rounded-lg shadow-md">
+									<button
+										onClick={() => handlePageChange(currentPage - 1)}
+										disabled={currentPage === 1}
+										className={`px-4 py-2 text-sm font-medium rounded-lg transition duration-150 ${
+											currentPage === 1
+												? "bg-gray-200 text-gray-500 cursor-not-allowed"
+												: "bg-indigo-600 text-white hover:bg-indigo-700"
+										}`}>
+										Previous
+									</button>
+
+									<span className="text-sm text-gray-700">
+										Page **{currentPage}** of **{totalPages}**
+									</span>
+
+									<button
+										onClick={() => handlePageChange(currentPage + 1)}
+										disabled={currentPage === totalPages}
+										className={`px-4 py-2 text-sm font-medium rounded-lg transition duration-150 ${
+											currentPage === totalPages
+												? "bg-gray-200 text-gray-500 cursor-not-allowed"
+												: "bg-indigo-600 text-white hover:bg-indigo-700"
+										}`}>
+										Next
+									</button>
+								</div>
+							)}
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</ProtectedRoute>
 	);
 }

@@ -10,6 +10,8 @@ import { createProperty } from "../../../services/property.api";
 import { allAgents } from "@/services/agent.api";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import ProtectedRoute from "../../components/ProtectRoute";
+
 interface PropertyState {
 	title: string;
 	price: string;
@@ -44,7 +46,9 @@ export default function AddPropertyPage() {
 			const res = await allAgents();
 			setAgents(res.agents || []);
 		} catch (err) {
-			console.error("Failed to load agents:", err);
+			if (process.env.NODE_ENV !== "production") {
+				console.error("Failed to load agents:", err);
+			}
 		}
 	}
 
@@ -93,7 +97,9 @@ export default function AddPropertyPage() {
 
 			router.push("/properties");
 		} catch (error) {
-			console.error("❌ Error creating property:", error);
+			if (process.env.NODE_ENV !== "production") {
+				console.error("❌ Error creating property:", error);
+			}
 			const msg =
 				(error as any)?.response?.data?.msg ||
 				(error as any)?.message ||
@@ -104,118 +110,120 @@ export default function AddPropertyPage() {
 		}
 	};
 	return (
-		<>
-			<Link href={"/properties"}>
-				<button className="m-5 bg-blue-800 text-white px-3 py-2 rounded-md absolute">
-					Back
-				</button>
-			</Link>
-			<div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
-				<Card className="w-full max-w-lg shadow-lg rounded-2xl">
-					<CardHeader>
-						<CardTitle className="text-center text-2xl font-bold text-gray-700">
-							Add New Property
-						</CardTitle>
-					</CardHeader>
+		<ProtectedRoute allowedRoles={["admin"]}>
+			<>
+				<Link href={"/properties"}>
+					<button className="m-5 bg-blue-800 text-white px-3 py-2 rounded-md absolute">
+						Back
+					</button>
+				</Link>
+				<div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
+					<Card className="w-full max-w-lg shadow-lg rounded-2xl">
+						<CardHeader>
+							<CardTitle className="text-center text-2xl font-bold text-gray-700">
+								Add New Property
+							</CardTitle>
+						</CardHeader>
 
-					<CardContent>
-						<form onSubmit={handleSubmit} className="space-y-4">
-							<div>
-								<label className="font-semibold">Title</label>
-								<Input
-									name="title"
-									value={property.title}
-									onChange={handleChange}
-									placeholder="Enter property title"
-									required
-								/>
-							</div>
+						<CardContent>
+							<form onSubmit={handleSubmit} className="space-y-4">
+								<div>
+									<label className="font-semibold">Title</label>
+									<Input
+										name="title"
+										value={property.title}
+										onChange={handleChange}
+										placeholder="Enter property title"
+										required
+									/>
+								</div>
 
-							<div>
-								<label className="font-semibold">Price</label>
-								<Input
-									name="price"
-									type="number"
-									value={property.price}
-									onChange={handleChange}
-									placeholder="Enter property price"
-									required
-								/>
-							</div>
+								<div>
+									<label className="font-semibold">Price</label>
+									<Input
+										name="price"
+										type="number"
+										value={property.price}
+										onChange={handleChange}
+										placeholder="Enter property price"
+										required
+									/>
+								</div>
 
-							<div>
-								<label className="font-semibold">City</label>
-								<Input
-									name="city"
-									value={property.city}
-									onChange={handleChange}
-									placeholder="Enter city"
-									required
-								/>
-							</div>
+								<div>
+									<label className="font-semibold">City</label>
+									<Input
+										name="city"
+										value={property.city}
+										onChange={handleChange}
+										placeholder="Enter city"
+										required
+									/>
+								</div>
 
-							<div>
-								<label className="font-semibold">Description</label>
-								<Textarea
-									name="desc"
-									value={property.desc}
-									onChange={handleChange}
-									placeholder="Enter property description"
-									required
-								/>
-							</div>
+								<div>
+									<label className="font-semibold">Description</label>
+									<Textarea
+										name="desc"
+										value={property.desc}
+										onChange={handleChange}
+										placeholder="Enter property description"
+										required
+									/>
+								</div>
 
-							<div>
-								<label className="font-semibold">Property Image</label>
-								<Input
-									type="file"
-									name="image"
-									accept="image/*"
-									onChange={handleFiles}
-									required
-								/>
-								{property.imageFile && (
-									<p className="text-sm text-gray-500 mt-1">
-										Selected File: **{property.imageFile.name}**
-									</p>
-								)}
-							</div>
+								<div>
+									<label className="font-semibold">Property Image</label>
+									<Input
+										type="file"
+										name="image"
+										accept="image/*"
+										onChange={handleFiles}
+										required
+									/>
+									{property.imageFile && (
+										<p className="text-sm text-gray-500 mt-1">
+											Selected File: **{property.imageFile.name}**
+										</p>
+									)}
+								</div>
 
-							<div>
-								<label className="font-semibold">Created By</label>
-								<Input
-									name="createdBy"
-									value={property.createdBy}
-									onChange={handleChange}
-									placeholder="Enter creator name or ID"
-								/>
-							</div>
+								<div>
+									<label className="font-semibold">Created By</label>
+									<Input
+										name="createdBy"
+										value={property.createdBy}
+										onChange={handleChange}
+										placeholder="Enter creator name or ID"
+									/>
+								</div>
 
-							<div>
-								<label className="font-semibold">Assign Agent</label>
-								<select
-									name="agentId"
-									value={(property as any).assignedTo}
-									onChange={(e) =>
-										setProperty({ ...property, assignedTo: e.target.value })
-									}
-									className="w-full p-2 border border-gray-300 rounded-md">
-									<option value="">None</option>
-									{agents.map((a) => (
-										<option key={a._id} value={a._id}>
-											{a.name}
-										</option>
-									))}
-								</select>
-							</div>
+								<div>
+									<label className="font-semibold">Assign Agent</label>
+									<select
+										name="agentId"
+										value={(property as any).assignedTo}
+										onChange={(e) =>
+											setProperty({ ...property, assignedTo: e.target.value })
+										}
+										className="w-full p-2 border border-gray-300 rounded-md">
+										<option value="">None</option>
+										{agents.map((a) => (
+											<option key={a._id} value={a._id}>
+												{a.name}
+											</option>
+										))}
+									</select>
+								</div>
 
-							<Button type="submit" className="w-full mt-3" disabled={loading}>
-								{loading ? "Adding..." : "Add Property"}
-							</Button>
-						</form>
-					</CardContent>
-				</Card>
-			</div>
-		</>
+								<Button type="submit" className="w-full mt-3" disabled={loading}>
+									{loading ? "Adding..." : "Add Property"}
+								</Button>
+							</form>
+						</CardContent>
+					</Card>
+				</div>
+			</>
+		</ProtectedRoute>
 	);
 }

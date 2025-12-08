@@ -19,13 +19,14 @@ export default function LeadsPage() {
       const res = await allLead();
       setLeads(res.leads || []);
     } catch (err) {
-      console.error("Failed to fetch leads:", err);
+      if (process.env.NODE_ENV !== "production") {
+        console.error("Failed to fetch leads:", err);
+      }
     } finally {
       setLoading(false);
     }
   }
 
-  // Filter leads based on search and status
   const filteredLeads = leads.filter((lead) => {
     const matchesSearch =
       lead.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -61,7 +62,6 @@ export default function LeadsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      {/* Header Section */}
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
           <div className="mb-4 sm:mb-0">
@@ -89,7 +89,6 @@ export default function LeadsPage() {
           </Link>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             <div className="flex items-center justify-between">
@@ -146,7 +145,6 @@ export default function LeadsPage() {
           </div>
         </div>
 
-        {/* Filters and Search */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
@@ -187,7 +185,6 @@ export default function LeadsPage() {
           </div>
         </div>
 
-        {/* Leads List */}
         {loading ? (
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
             <div className="flex items-center justify-center">
@@ -329,7 +326,6 @@ export default function LeadsPage() {
                     </div>
                   </div>
 
-                  {/* Mobile status badge */}
                   <div className="sm:hidden mt-4">
                     {getStatusBadge(lead.status)}
                   </div>
