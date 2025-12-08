@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useMemo } from "react";
-import { allProperties, deleteProperty } from "../../services/property.api";
+import { allProperties, deleteProperty, approveProperty, rejectProperty } from "../../services/property.api";
 import { Property } from "@/types/property";
 import { useTokenData } from "@/lib/token";
 import Navbar from "../components/navbar";
@@ -47,6 +47,29 @@ export default function Page() {
 			setCurrentPage(page);
 		}
 	};
+
+	const handleApprove = async (id: string) => {
+		try {
+			await approveProperty(id);
+			await getProperties();
+			toast.success("Property approved successfully");
+		} catch (error) {
+			console.error("Error approving property:", error);
+			toast.error("Failed to approve property");
+		}
+	};
+
+	const handleReject = async (id: string) => {
+		try {
+			await rejectProperty(id);
+			await getProperties();
+			toast.success("Property rejected successfully");
+		} catch (error) {
+			console.error("Error rejecting property:", error);
+			toast.error("Failed to reject property");
+		}
+	};
+
 	if (tokenLoading === false) {
 		if (tokenData?.role !== "admin") {
 			return (
@@ -140,10 +163,13 @@ export default function Page() {
 											City
 										</th>
 										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+											Status
+										</th>
+										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 											Created By (ID)
 										</th>
 										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-											Edit / Delete
+											Actions
 										</th>
 									</tr>
 								</thead>
@@ -171,12 +197,37 @@ export default function Page() {
 											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
 												{property.city}
 											</td>
+											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+												<span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+													property.status === "approved"
+														? "bg-green-100 text-green-800"
+														: property.status === "rejected"
+														? "bg-red-100 text-red-800"
+														: "bg-yellow-100 text-yellow-800"
+												}`}>
+													{property.status || "pending"}
+												</span>
+											</td>
 											<td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
 												{property.createdBy}
 											</td>
 											<td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+												{property.status === "pending" && (
+													<>
+														<button
+															onClick={() => handleApprove(property._id)}
+															className="text-white text-[15px] bg-green-600 rounded-md p-2 m-1 border-none cursor-pointer active:bg-green-700 hover:bg-green-500">
+															Approve
+														</button>
+														<button
+															onClick={() => handleReject(property._id)}
+															className="text-white text-[15px] bg-red-600 rounded-md p-2 m-1 border-none cursor-pointer active:bg-red-700 hover:bg-red-500">
+															Reject
+														</button>
+													</>
+												)}
 												<Link href={`/properties/${property._id}/edit`}>
-													<button className="text-white text-[15px] bg-blue-700 rounded-md p-2 m-2 border-none	cursor-pointer active:bg-blue-600 hover:bg-blue-500">
+													<button className="text-white text-[15px] bg-blue-700 rounded-md p-2 m-1 border-none	cursor-pointer active:bg-blue-600 hover:bg-blue-500">
 														Edit
 													</button>
 												</Link>
@@ -184,7 +235,7 @@ export default function Page() {
 													onClick={() => {
 														deleteProp(property._id);
 													}}
-													className="text-white text-[15px] bg-red-600 rounded-md p-2 m-2 border-none	cursor-pointer active:bg-red-600 hover:bg-red-500">
+													className="text-white text-[15px] bg-red-600 rounded-md p-2 m-1 border-none	cursor-pointer active:bg-red-600 hover:bg-red-500">
 													Delete
 												</button>
 											</td>

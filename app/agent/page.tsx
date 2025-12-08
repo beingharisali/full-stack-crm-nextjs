@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, useMemo } from "react";
 
-import { allAgents, deleteAgent } from "@/services/agent.api";
+import { allAgents, deleteAgent, deactivateAgent, activateAgent } from "@/services/agent.api";
 import { Agent } from "@/types/agent";
 import { useTokenData } from "@/lib/token";
 import Navbar from "../components/navbar";
@@ -68,6 +68,28 @@ export default function AgentListPage() {
 				console.error("Error occurred in deleting agent", error);
 				toast.error("Failed to delete agent");
 			}
+		}
+	};
+
+	const handleDeactivateAgent = async (id: string) => {
+		try {
+			await deactivateAgent(id);
+			await getAgents();
+			toast.success("Agent deactivated successfully");
+		} catch (error) {
+			console.error("Error deactivating agent:", error);
+			toast.error("Failed to deactivate agent");
+		}
+	};
+
+	const handleActivateAgent = async (id: string) => {
+		try {
+			await activateAgent(id);
+			await getAgents();
+			toast.success("Agent activated successfully");
+		} catch (error) {
+			console.error("Error activating agent:", error);
+			toast.error("Failed to activate agent");
 		}
 	};
 
@@ -148,6 +170,9 @@ export default function AgentListPage() {
 											Email
 										</th>
 										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+											Status
+										</th>
+										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 											Assigned Properties
 										</th>
 										<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -166,6 +191,15 @@ export default function AgentListPage() {
 											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
 												{agent.email}
 											</td>
+											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+												<span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+													agent.isActive === false
+														? "bg-red-100 text-red-800"
+														: "bg-green-100 text-green-800"
+												}`}>
+													{agent.isActive === false ? "Inactive" : "Active"}
+												</span>
+											</td>
 											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
 												{/* FIX: Display the count of assigned properties */}
 												{agent.assignedProperties &&
@@ -174,6 +208,19 @@ export default function AgentListPage() {
 													: "None"}
 											</td>
 											<td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+												{agent.isActive === false ? (
+													<button
+														onClick={() => handleActivateAgent(agent._id)}
+														className="text-white text-[15px] bg-green-600 rounded-md p-2 m-1 border-none cursor-pointer active:bg-green-700 hover:bg-green-500">
+														Activate
+													</button>
+												) : (
+													<button
+														onClick={() => handleDeactivateAgent(agent._id)}
+														className="text-white text-[15px] bg-orange-600 rounded-md p-2 m-1 border-none cursor-pointer active:bg-orange-700 hover:bg-orange-500">
+														Deactivate
+													</button>
+												)}
 												<Link href={`/agents/${agent._id}/edit`}>
 													<button className="text-white text-[15px] bg-blue-700 rounded-md p-2 m-1 border-none cursor-pointer active:bg-blue-600 hover:bg-blue-500">
 														Edit

@@ -63,3 +63,21 @@ export async function deleteProperty(id: string): Promise<{ message: string }> {
 		throw error;
 	}
 }
+
+export async function approveProperty(id: string): Promise<{ property: Property }> {
+	try {
+		const res = await http.patch(`/approve-property/${id}`);
+		return res.data;
+	} catch (error) {
+		throw error;
+	}
+}
+
+export async function rejectProperty(id: string): Promise<{ property: Property }> {
+	try {
+		const res = await http.patch(`/reject-property/${id}`);
+		return res.data;
+	} catch (error) {
+		throw error;
+	}
+}
