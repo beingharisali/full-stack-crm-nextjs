@@ -75,3 +75,23 @@ export async function deleteAgent(id: string): Promise<{ message: string }> {
 		throw error;
 	}
 }
+
+export async function deactivateAgent(id: string): Promise<{ agent: Agent }> {
+	try {
+		const res = await http.patch(`/deactivate-agent/${id}`);
+		return res.data;
+	} catch (error) {
+		console.error(`Error deactivating agent ${id}:`, error);
+		throw error;
+	}
+}
+
+export async function activateAgent(id: string): Promise<{ agent: Agent }> {
+	try {
+		const res = await http.patch(`/activate-agent/${id}`);
+		return res.data;
+	} catch (error) {
+		console.error(`Error activating agent ${id}:`, error);
+		throw error;
+	}
+}

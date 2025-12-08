@@ -11,9 +11,9 @@ import ProtectedRoute from "../components/ProtectRoute";
 
 const PROPERTIES_PER_PAGE = 10;
 
-export default function Page() {
+export default function PropertyListPage() {
 	const [properties, setProperties] = useState<Property[]>([]);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [tokenData, tokenLoading] = useTokenData();
 	console.log(loading, properties, tokenData, tokenLoading);
@@ -37,16 +37,29 @@ export default function Page() {
 	}
 
 	useEffect(() => {
-		getProperties();
+		allProperties()
+			.then((data) => {
+				if (Array.isArray(data.properties)) {
+					setProperties(data.properties);
+					setTotalPages(Math.ceil(data.properties.length / ITEMS_PER_PAGE));
+				} else {
+					setProperties([]);
+					setTotalPages(0);
+				}
+				setLoading(false);
+			})
+			.catch((error) => {
+				if (process.env.NODE_ENV !== "production") {
+					console.error("Error fetching properties:", error);
+				}
+				setLoading(false);
+				toast.error("Failed to load properties");
+			});
 	}, []);
 
-	const totalPages = Math.ceil(properties.length / PROPERTIES_PER_PAGE);
-
-	const currentProperties = useMemo(() => {
-		const startIndex = (currentPage - 1) * PROPERTIES_PER_PAGE;
-		const endIndex = startIndex + PROPERTIES_PER_PAGE;
-		return properties.slice(startIndex, endIndex);
-	}, [properties, currentPage]);
+	const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+	const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+	const currentProperties = properties.slice(indexOfFirstItem, indexOfLastItem);
 
 	const handlePageChange = (page: number) => {
 		if (page > 0 && page <= totalPages) {

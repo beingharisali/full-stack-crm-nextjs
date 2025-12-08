@@ -3,6 +3,7 @@ export interface Agent {
 	name: string;
 	email: string;
 	assignedProperties: string[];
+	isActive?: boolean;
 }
 export interface AuthResponse {
 	agent: Agent;

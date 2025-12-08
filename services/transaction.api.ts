@@ -5,7 +5,7 @@ export async function createTransaction(
 	payload: Transaction
 ): Promise<{ transaction: Transaction }> {
 	const res = await http.post("/create-transaction", payload);
-	return res.data;
+	return { transaction: res.data.data };
 }
 
 export async function updateTransaction(
@@ -23,21 +23,21 @@ export async function updateTransaction(
 
 	const res = await http.patch(`/update-transaction/${id}`, updates, config);
 
-	return res.data;
+	return { transaction: res.data.data };
 }
 
 export async function allTransactions(): Promise<{
 	transactions: Transaction[];
 }> {
 	const res = await http.get("/get-transactions");
-	return res.data;
+	return { transactions: res.data.data };
 }
 
 export async function getSingleTransaction(
 	id: string
 ): Promise<{ transaction: Transaction }> {
 	const res = await http.get(`/get-transaction/${id}`);
-	return res.data;
+	return { transaction: res.data.data };
 }
 
 export async function deleteTransaction(

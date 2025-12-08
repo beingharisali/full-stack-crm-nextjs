@@ -1,7 +1,6 @@
 import Link from "next/link";
-import React from "react";
 
-function Sidebar() {
+const Sidebar = () => {
 	return (
 		<div className="hidden md:flex flex-col w-64 bg-gray-800 rounded-2xl h-[80vh]">
 			<div className="flex flex-col flex-1 overflow-y-auto">
@@ -44,6 +43,6 @@ function Sidebar() {
 			</div>
 		</div>
 	);
-}
+};
 
 export default Sidebar;

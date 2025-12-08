@@ -3,17 +3,20 @@
 import React, { useEffect, useState } from "react";
 import { createLead } from "@/services/lead.api";
 import { allProperties } from "@/services/property.api";
+import { Property } from "@/types/property";
+import { Loader2, ArrowLeft, User, Mail, MessageSquare, Home } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
 } from "@/components/ui/card";
 import {
   Loader2,
@@ -52,21 +55,21 @@ export default function CreateLeadPage() {
     }
   }
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+	const handleChange = (
+		e: React.ChangeEvent<
+			HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+		>
+	) => {
+		setForm({ ...form, [e.target.name]: e.target.value });
+	};
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
 
-    if (!form.name || !form.email || !form.message || !form.propertyRef) {
-      toast.error("Please fill in all fields");
-      return;
-    }
+		if (!form.name || !form.email || !form.message || !form.propertyRef) {
+			toast.error("Please fill in all fields");
+			return;
+		}
 
     setLoading(true);
     try {
@@ -242,4 +245,20 @@ export default function CreateLeadPage() {
       </div>
     </ProtectedRoute>
   );
+}
+
+export default function CreateLeadPage() {
+	return (
+		<Suspense
+			fallback={
+				<div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 py-8 px-4 flex items-center justify-center">
+					<div className="flex items-center gap-2 text-slate-600">
+						<Loader2 className="h-5 w-5 animate-spin" />
+						<span>Loading...</span>
+					</div>
+				</div>
+			}>
+			<CreateLeadForm />
+		</Suspense>
+	);
 }

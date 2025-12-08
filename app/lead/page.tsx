@@ -1,17 +1,19 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { allLead } from "@/services/lead.api";
 import Link from "next/link";
 
 export default function LeadsPage() {
-  const [leads, setLeads] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+	const [leads, setLeads] = useState<any[]>([]);
+	const [loading, setLoading] = useState(false);
+	const [searchTerm, setSearchTerm] = useState("");
+	const [statusFilter, setStatusFilter] = useState("all");
+	const [tokenData, tokenLoading] = useTokenData();
 
-  useEffect(() => {
-    getLeads();
-  }, []);
+	useEffect(() => {
+		getLeads();
+	}, []);
 
   async function getLeads() {
     setLoading(true);
@@ -27,38 +29,71 @@ export default function LeadsPage() {
     }
   }
 
+	// 🔍 Search + filter logic
+	const filteredLeads = leads.filter((lead) => {
+		const matchesSearch =
+			lead.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			lead.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			lead.propertyRef?.toLowerCase().includes(searchTerm.toLowerCase());
   const filteredLeads = leads.filter((lead) => {
     const matchesSearch =
       lead.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lead.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lead.propertyRef?.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus =
-      statusFilter === "all" || lead.status === statusFilter;
+		const matchesStatus =
+			statusFilter === "all" || lead.status === statusFilter;
 
-    return matchesSearch && matchesStatus;
-  });
+		return matchesSearch && matchesStatus;
+	});
 
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      new: { color: "bg-blue-100 text-blue-800", label: "New" },
-      contacted: { color: "bg-purple-100 text-purple-800", label: "Contacted" },
-      qualified: { color: "bg-green-100 text-green-800", label: "Qualified" },
-      converted: { color: "bg-gray-100 text-gray-800", label: "Converted" },
-    };
+	const getStatusBadge = (status: string) => {
+		const config: Record<string, { color: string; label: string; bg: string }> =
+			{
+				new: { color: "text-blue-700", bg: "bg-blue-100", label: "New" },
+				contacted: {
+					color: "text-purple-700",
+					bg: "bg-purple-100",
+					label: "Contacted",
+				},
+				qualified: {
+					color: "text-green-700",
+					bg: "bg-green-100",
+					label: "Qualified",
+				},
+				converted: {
+					color: "text-gray-700",
+					bg: "bg-gray-200",
+					label: "Converted",
+				},
+			};
 
-    const config = statusConfig[status as keyof typeof statusConfig] || {
-      color: "bg-gray-100 text-gray-800",
-      label: status || "New",
-    };
+		const current = config[status] || {
+			color: "text-gray-700",
+			bg: "bg-gray-200",
+			label: status || "Unknown",
+		};
 
-    return (
-      <span
-        className={`px-2 py-1 rounded-full text-xs font-medium ${config.color}`}>
-        {config.label}
-      </span>
-    );
-  };
+		return (
+			<span
+				className={`px-3 py-1 text-xs font-medium rounded-full ${current.bg} ${current.color}`}>
+				{current.label}
+			</span>
+		);
+	};
+
+	if (!tokenLoading && tokenData?.role !== "admin") {
+		return (
+			<>
+				<Navbar />
+				<div className="h-screen flex items-center justify-center">
+					<h1 className="text-3xl font-semibold text-gray-700">
+						Only Admin can access this page
+					</h1>
+				</div>
+			</>
+		);
+	}
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">

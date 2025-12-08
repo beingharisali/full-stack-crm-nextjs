@@ -6,6 +6,7 @@ interface DecodedToken {
 	firstName: string;
 	lastName: string;
 	email: string;
+	userId: string;
 	password: string;
 	role: "admin" | "agent" | "user" | string;
 }

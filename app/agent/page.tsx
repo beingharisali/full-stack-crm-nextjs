@@ -1,24 +1,24 @@
 "use client";
-import React, { useEffect, useState, useMemo } from "react";
 
-import { allAgents, deleteAgent } from "@/services/agent.api";
-import { Agent } from "@/types/agent";
-import { useTokenData } from "@/lib/token";
-import Navbar from "../components/navbar";
-import Sidebar from "../components/sidebar";
+import React, { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { allAgents, deleteAgent, deactivateAgent, activateAgent } from "@/services/agent.api";
+import { Agent } from "@/types/agent";
+import Navbar from "../components/navbar";
+import Sidebar from "../components/sidebar";
 import ProtectedRoute from "../components/ProtectRoute";
 
 const AGENTS_PER_PAGE = 10;
 
 export default function AgentListPage() {
-	const [agents, setAgents] = useState<Agent[]>([] as Agent[]);
+	const [agents, setAgents] = useState<Agent[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [tokenData, tokenLoading] = useTokenData();
+	const [tokenData, setTokenData] = useState<{ role: string } | null>(null);
+	const [tokenLoading, setTokenLoading] = useState(true);
 
-	async function getAgents() {
+	const getAgents = async () => {
 		setLoading(true);
 		try {
 			const response = await allAgents();
@@ -35,18 +35,35 @@ export default function AgentListPage() {
 		} finally {
 			setLoading(false);
 		}
-	}
+	};
 
 	useEffect(() => {
+		// Check user role
+		const fetchUserData = async () => {
+			try {
+				const token = localStorage.getItem("token");
+				if (token) {
+					const payload = JSON.parse(atob(token.split(".")[1]));
+					setTokenData(payload);
+				}
+			} catch (error) {
+				if (process.env.NODE_ENV !== "production") {
+					console.error("Error decoding token:", error);
+				}
+			} finally {
+				setTokenLoading(false);
+			}
+		};
+
+		fetchUserData();
 		getAgents();
 	}, []);
 
 	const totalPages = Math.ceil(agents.length / AGENTS_PER_PAGE);
 
 	const currentAgents = useMemo(() => {
-		const startIndex = (currentPage - 1) * AGENTS_PER_PAGE;
-		const endIndex = startIndex + AGENTS_PER_PAGE;
-		return agents.slice(startIndex, endIndex);
+		const start = (currentPage - 1) * AGENTS_PER_PAGE;
+		return agents.slice(start, start + AGENTS_PER_PAGE);
 	}, [agents, currentPage]);
 
 	const handlePageChange = (page: number) => {
@@ -80,7 +97,9 @@ export default function AgentListPage() {
 
 	const handleDeactivateAgent = async (id: string) => {
 		try {
-			toast.error("Deactivate functionality not implemented yet");
+			await deactivateAgent(id);
+			await getAgents();
+			toast.success("Agent deactivated successfully");
 		} catch (error) {
 			if (process.env.NODE_ENV !== "production") {
 				console.error("Error deactivating agent:", error);
@@ -91,7 +110,9 @@ export default function AgentListPage() {
 
 	const handleActivateAgent = async (id: string) => {
 		try {
-			toast.error("Activate functionality not implemented yet");
+			await activateAgent(id);
+			await getAgents();
+			toast.success("Agent activated successfully");
 		} catch (error) {
 			if (process.env.NODE_ENV !== "production") {
 				console.error("Error activating agent:", error);
@@ -120,32 +141,7 @@ export default function AgentListPage() {
 	}
 
 	if (loading) {
-		return (
-			<div className="text-center p-8 text-xl font-semibold text-gray-500">
-				Loading agents...
-			</div>
-		);
-	}
-
-	if (agents.length === 0) {
-		return (
-			<>
-				<Navbar />
-				<div className="flex justify-between m-5">
-					<h1 className="text-3xl font-bold mb-6 text-gray-800">
-						Agent Listings
-					</h1>
-					<Link href="/agent/create">
-						<button className="p-3 text-[20px] rounded-2xl bg-blue-700 cursor-pointer hover:bg-blue-800 text-white active:bg-blue-500">
-							Create Agent
-						</button>
-					</Link>
-				</div>
-				<div className="text-center p-8 text-xl font-semibold text-gray-700">
-					No agents found.
-				</div>
-			</>
-		);
+		return <p className="text-center p-8">Loading agents...</p>;
 	}
 
 	return (
@@ -178,6 +174,9 @@ export default function AgentListPage() {
 												Email
 											</th>
 											<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+												Status
+											</th>
+											<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 												Assigned Properties
 											</th>
 											<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -196,6 +195,15 @@ export default function AgentListPage() {
 												<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
 													{agent.email}
 												</td>
+												<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+													<span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+														agent.isActive === false
+															? "bg-red-100 text-red-800"
+															: "bg-green-100 text-green-800"
+													}`}>
+														{agent.isActive === false ? "Inactive" : "Active"}
+													</span>
+												</td>
 												<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
 													{agent.assignedProperties &&
 													agent.assignedProperties.length > 0
@@ -203,11 +211,19 @@ export default function AgentListPage() {
 														: "None"}
 												</td>
 												<td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
-													<button
-														onClick={() => toast.error("Agent activation/deactivation not implemented")}
-														className="text-white text-[15px] bg-orange-600 rounded-md p-2 m-1 border-none cursor-pointer active:bg-orange-700 hover:bg-orange-500">
-														Activate/Deactivate
-													</button>
+													{agent.isActive === false ? (
+														<button
+															onClick={() => handleActivateAgent(agent._id)}
+															className="text-white text-[15px] bg-green-600 rounded-md p-2 m-1 border-none cursor-pointer active:bg-green-700 hover:bg-green-500">
+															Activate
+														</button>
+													) : (
+														<button
+															onClick={() => handleDeactivateAgent(agent._id)}
+															className="text-white text-[15px] bg-orange-600 rounded-md p-2 m-1 border-none cursor-pointer active:bg-orange-700 hover:bg-orange-500">
+															Deactivate
+														</button>
+													)}
 													<Link href={`/agents/${agent._id}/edit`}>
 														<button className="text-white text-[15px] bg-blue-700 rounded-md p-2 m-1 border-none cursor-pointer active:bg-blue-600 hover:bg-blue-500">
 															Edit

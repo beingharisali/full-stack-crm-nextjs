@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const getRedirectPath = (role?: string) => {
 		switch (role) {
 			case "admin":
-				return "/properties";
+				return "/welcome";
 			case "agent":
 				return "/properties/property";
 			case "user":
@@ -95,10 +95,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			localStorage.setItem("token", res.token);
 		}
 
-		setUser(res.user);
-		console.log("res.user", res);
-
-		router.replace(getRedirectPath(res.user.role));
+		if (res.user) {
+			setUser(res.user);
+			console.log("res.user", res.user);
+			if (res.user.role) {
+				router.replace(getRedirectPath(res.user.role));
+			} else {
+				router.replace(getRedirectPath());
+			}
+		} else {
+			router.replace(getRedirectPath());
+		}
 	};
 	const loginUser = async (email: string, password: string, role: UserRole) => {
 		const res = await loginApi(email, password, role as string);
@@ -107,9 +114,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			localStorage.setItem("token", res.token);
 		}
 
-		setUser(res.user);
-
-		router.replace(getRedirectPath(res.user.role));
+		if (res.user) {
+			setUser(res.user);
+			if (res.user.role) {
+				router.replace(getRedirectPath(res.user.role));
+			} else {
+				router.replace(getRedirectPath());
+			}
+		} else {
+			router.replace(getRedirectPath());
+		}
 	};
 
 	const logoutUser = async () => {
