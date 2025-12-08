@@ -2,7 +2,6 @@ import Link from "next/link";
 
 const Sidebar = () => {
 
-	console.log("testing");
 	return (
 		<div className="hidden md:flex flex-col w-64 bg-gray-800 rounded-2xl h-[80vh]">
 			<div className="flex flex-col flex-1 overflow-y-auto">
