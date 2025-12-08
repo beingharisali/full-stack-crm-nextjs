@@ -10,11 +10,13 @@ import toast from "react-hot-toast";
 import ProtectedRoute from "../components/ProtectRoute";
 
 const PROPERTIES_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 10;
 
 export default function PropertyListPage() {
 	const [properties, setProperties] = useState<Property[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [currentPage, setCurrentPage] = useState(1);
+	const [totalPages, setTotalPages] = useState(0);
 	const [tokenData, tokenLoading] = useTokenData();
 	console.log(loading, properties, tokenData, tokenLoading);
 
@@ -66,6 +68,7 @@ export default function PropertyListPage() {
 			setCurrentPage(page);
 		}
 	};
+	
 	if (tokenLoading === false) {
 		if (tokenData?.role !== "admin") {
 			return (
@@ -78,6 +81,7 @@ export default function PropertyListPage() {
 			);
 		}
 	}
+	
 	if (loading) {
 		return (
 			<div className="text-center p-8 text-xl font-semibold text-gray-500">
@@ -106,6 +110,7 @@ export default function PropertyListPage() {
 			</>
 		);
 	}
+	
 	const deleteProp = async (id: string) => {
 		const isConfirmed = window.confirm(
 			"Are you sure you want to delete your property?"
