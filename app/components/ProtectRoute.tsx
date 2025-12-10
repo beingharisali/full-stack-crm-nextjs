@@ -13,24 +13,22 @@ export default function ProtectedRoute({
   allowedRoles,
   children,
 }: ProtectedRouteProps) {
-  const { user, loading } = useAuthContext();
+  const { user } = useAuthContext();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        router.replace("/");
-      } else if (!allowedRoles.includes(user.role)) {
-        router.replace("/unauthorized");
-      }
+    if (user === null) {
+      router.replace("/");
+    } else if (!allowedRoles.includes(user.role)) {
+      router.replace("/unauthorized");
     }
-  }, [user, loading, router, allowedRoles]);
+  }, [user, router, allowedRoles]);
 
-  if (loading) {
-    return <p className="text-center mt-10">Loading...</p>;
+  if (user === null) {
+    return null;
   }
 
-  if (!user || !allowedRoles.includes(user.role)) {
+  if (!allowedRoles.includes(user.role)) {
     return null;
   }
 

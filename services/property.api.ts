@@ -1,4 +1,3 @@
-// src/services/propertyService.js
 import http from "./http";
 import { Property } from "../types/property";
 

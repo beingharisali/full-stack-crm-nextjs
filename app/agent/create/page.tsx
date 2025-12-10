@@ -214,104 +214,108 @@ export default function CreateAgentPage() {
 
 	return (
 		<ProtectedRoute allowedRoles={["admin"]}>
-			<div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4 sm:p-6">
-				<div className="w-full max-w-lg mb-6 flex items-center">
+			<div className="min-h-screen bg-gray-50 py-8">
+				<div className="max-w-4xl mx-auto px-4">
 					<Link href={"/agent"}>
-						<Button className="bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 transition-all shadow-sm flex items-center gap-2">
-							<span>&larr;</span> Back
-						</Button>
+						<button className="mb-6 inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+							<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+								<path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+							</svg>
+							Back to Agents
+						</button>
 					</Link>
-				</div>
-
-				<Card className="w-full max-w-lg shadow-xl rounded-xl border-t-4 border-blue-600 bg-white">
-					<CardHeader className="pb-2 text-center">
-						<CardTitle className="text-2xl font-bold text-gray-800">
-							Add New Agent
-						</CardTitle>
-						<p className="text-sm text-gray-500 mt-1">
-							Create a profile and assign initial properties.
-						</p>
-					</CardHeader>
-
-					<CardContent>
-						<form onSubmit={handleSubmit} className="space-y-5">
-							<div className="space-y-1.5">
-								<label
-									className="text-sm font-medium text-gray-700"
-									htmlFor="name">
-									Full Name <span className="text-red-500">*</span>
-								</label>
-								<Input
-									id="name"
-									name="name"
-									value={agentData.name}
-									onChange={handleChange}
-									placeholder="e.g. John Doe"
-									required
-									className="focus-visible:ring-blue-500"
-								/>
-							</div>
-
-							<div className="space-y-1.5">
-								<label
-									className="text-sm font-medium text-gray-700"
-									htmlFor="email">
-									Email Address <span className="text-red-500">*</span>
-								</label>
-								<Input
-									id="email"
-									name="email"
-									type="email"
-									value={agentData.email}
-									onChange={handleChange}
-									placeholder="john@example.com"
-									required
-									className="focus-visible:ring-blue-500"
-								/>
-							</div>
-
-							<div className="space-y-2 pt-2">
-								<div className="flex justify-between items-center">
-									<label
-										className="text-sm font-medium text-gray-700"
-										htmlFor="assignedProperties">
-										Assign Properties
-									</label>
-									<span className="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
-										{agentData.assignedProperties.length} selected
-									</span>
+					
+					<Card className="shadow-lg rounded-2xl border-0 overflow-hidden">
+						<div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-center">
+							<h1 className="text-2xl font-bold text-white">Add New Agent</h1>
+							<p className="text-blue-100 mt-1">Create a profile and assign initial properties</p>
+						</div>
+						
+						<CardContent className="p-6">
+							{loading ? (
+								<div className="flex flex-col items-center justify-center py-12">
+									<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+									<p className="text-gray-600 font-medium">Creating agent profile...</p>
+									<p className="text-gray-500 text-sm mt-1">Please wait while we process your request</p>
 								</div>
-
-								<PropertyAssignmentList
-									properties={unassignedProperties}
-									selectedPropertyIds={agentData.assignedProperties}
-									onSelectionChange={handlePropertySelectionChange}
-									loading={loading}
-								/>
-
-								<p className="text-xs text-gray-400">
-									Only unassigned properties are shown above.
-								</p>
-							</div>
-
-							<div className="pt-4">
-								<Button
-									type="submit"
-									className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 shadow-md transition-all active:scale-[0.99]"
-									disabled={loading}>
-									{loading ? (
-										<div className="flex items-center gap-2">
-											<div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-											Saving Agent...
+							) : (
+								<form onSubmit={handleSubmit} className="space-y-6">
+									<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+										<div>
+											<label className="block text-sm font-medium text-gray-700 mb-1">
+												Full Name <span className="text-red-500">*</span>
+											</label>
+											<Input
+												name="name"
+												value={agentData.name}
+												onChange={handleChange}
+												placeholder="e.g. John Doe"
+												required
+												className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+											/>
 										</div>
-									) : (
-										"Create Agent & Assign"
-									)}
-								</Button>
-							</div>
-						</form>
-					</CardContent>
-				</Card>
+
+										<div>
+											<label className="block text-sm font-medium text-gray-700 mb-1">
+												Email Address <span className="text-red-500">*</span>
+											</label>
+											<Input
+												name="email"
+												type="email"
+												value={agentData.email}
+												onChange={handleChange}
+												placeholder="john@example.com"
+												required
+												className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+											/>
+										</div>
+									</div>
+
+									<div>
+										<div className="flex justify-between items-center mb-2">
+											<label className="block text-sm font-medium text-gray-700">
+												Assign Properties
+											</label>
+											<span className="inline-flex items-center text-xs font-medium bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full">
+												{agentData.assignedProperties.length} selected
+											</span>
+										</div>
+
+										<PropertyAssignmentList
+											properties={unassignedProperties}
+											selectedPropertyIds={agentData.assignedProperties}
+											onSelectionChange={handlePropertySelectionChange}
+											loading={loading}
+										/>
+
+										<p className="text-xs text-gray-500 mt-2">
+											Only unassigned properties are shown above.
+										</p>
+									</div>
+
+									<div className="flex justify-end pt-4">
+										<Button
+											type="submit"
+											className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-105"
+											disabled={loading}>
+											{loading ? (
+												<span className="flex items-center">
+													<svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+														<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+														<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+													</svg>
+													Creating Agent...
+												</span>
+											) : (
+												"Create Agent & Assign"
+											)}
+										</Button>
+									</div>
+								</form>
+							)}
+						</CardContent>
+					</Card>
+				</div>
 			</div>
 		</ProtectedRoute>
 	);

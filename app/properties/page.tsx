@@ -1,83 +1,68 @@
 "use client";
-import React, { useEffect, useState, useMemo } from "react";
-import { allProperties, deleteProperty, approveProperty, rejectProperty } from "../../services/property.api";
-import { Property } from "@/types/property";
-import { useTokenData } from "@/lib/token";
-import Navbar from "../components/navbar";
-import Sidebar from "../components/sidebar";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { deleteProperty, allProperties, approveProperty, rejectProperty } from "@/services/property.api";
 import toast from "react-hot-toast";
+import { useTokenData } from "@/lib/token";
+import Sidebar from "../components/sidebar";
 import ProtectedRoute from "../components/ProtectRoute";
 
-const PROPERTIES_PER_PAGE = 10;
-const ITEMS_PER_PAGE = 10;
+interface Property {
+	_id: string;
+	title: string;
+	price: number;
+	city: string;
+	imageURL: string;
+	status?: "approved" | "rejected" | "pending";
+	createdBy: string;
+}
 
-export default function PropertyListPage() {
+export default function PropertiesPage() {
 	const [properties, setProperties] = useState<Property[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [totalPages, setTotalPages] = useState(0);
+	const [totalPages, setTotalPages] = useState(1);
 	const [tokenData, tokenLoading] = useTokenData();
-	console.log(loading, properties, tokenData, tokenLoading);
+	const propertiesPerPage = 5;
 
-	async function getProperties() {
-		setLoading(true);
+	const getProperties = async () => {
 		try {
-			const response = await allProperties();
-			if (process.env.NODE_ENV !== "production") {
-				console.log("property response", response);
+			const res = await allProperties();
+			if (Array.isArray(res.properties)) {
+				setProperties(res.properties);
+				setTotalPages(Math.ceil(res.properties.length / propertiesPerPage));
+			} else {
+				setProperties([]);
 			}
-			const data = response.properties || response.properties;
-			setProperties(data);
-		} catch (err) {
+		} catch (error) {
 			if (process.env.NODE_ENV !== "production") {
-				console.error("Error occurred in fetching data:", err);
+				console.error("Error fetching properties:", error);
 			}
+			toast.error("Failed to load properties");
 		} finally {
 			setLoading(false);
 		}
-	}
+	};
 
 	useEffect(() => {
-		allProperties()
-			.then((data) => {
-				if (Array.isArray(data.properties)) {
-					setProperties(data.properties);
-					setTotalPages(Math.ceil(data.properties.length / ITEMS_PER_PAGE));
-				} else {
-					setProperties([]);
-					setTotalPages(0);
-				}
-				setLoading(false);
-			})
-			.catch((error) => {
-				if (process.env.NODE_ENV !== "production") {
-					console.error("Error fetching properties:", error);
-				}
-				setLoading(false);
-				toast.error("Failed to load properties");
-			});
+		getProperties();
 	}, []);
 
-	const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
-	const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-	const currentProperties = properties.slice(indexOfFirstItem, indexOfLastItem);
+	const indexOfLastProperty = currentPage * propertiesPerPage;
+	const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
+	const currentProperties = properties.slice(indexOfFirstProperty, indexOfLastProperty);
 
-	const handlePageChange = (page: number) => {
-		if (page > 0 && page <= totalPages) {
-			setCurrentPage(page);
-		}
+	const handlePageChange = (pageNumber: number) => {
+		setCurrentPage(pageNumber);
 	};
 	
 	if (tokenLoading === false) {
 		if (tokenData?.role !== "admin") {
 			return (
-				<>
-					<Navbar />
-					<div className="h-full flex items-center justify-center ">
-						<h1 className="text-3xl">Only Admin can access this page</h1>
-					</div>
-				</>
+				<div className="h-full flex items-center justify-center ">
+					<h1 className="text-3xl">Only Admin can access this page</h1>
+				</div>
 			);
 		}
 	}
@@ -92,22 +77,19 @@ export default function PropertyListPage() {
 
 	if (properties.length === 0) {
 		return (
-			<>
-				<Navbar />
-				<div className="flex justify-between m-5">
-					<h1 className="text-3xl font-bold mb-6 text-gray-800">
-						Property Listings
-					</h1>
-					<Link href="/properties/add">
-						<button className="p-3 text-[20px] rounded-2xl bg-blue-700 cursor-pointer hover:bg-blue-800 text-white active:bg-blue-500">
-							Create Property
-						</button>
-					</Link>
-				</div>
+			<div className="flex justify-between m-5">
+				<h1 className="text-3xl font-bold mb-6 text-gray-800">
+					Property Listings
+				</h1>
+				<Link href="/properties/add">
+					<button className="p-3 text-[20px] rounded-2xl bg-blue-700 cursor-pointer hover:bg-blue-800 text-white active:bg-blue-500">
+						Create Property
+					</button>
+				</Link>
 				<div className="text-center p-8 text-xl font-semibold text-gray-700">
 					No properties found.
 				</div>
-			</>
+			</div>
 		);
 	}
 	
@@ -161,7 +143,6 @@ export default function PropertyListPage() {
 		<ProtectedRoute allowedRoles={["admin"]}>
 			<div className="flex">
 				<div className="flex-1 flex flex-col">
-					<Navbar />
 					<div className="flex mx-3">
 						<Sidebar />
 						<div className="p-4 md:p-8 w-[80%]">
