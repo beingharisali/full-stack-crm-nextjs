@@ -1,43 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import { allTransactions, deleteTransaction } from "@/services/transaction.api";
-import toast from "react-hot-toast";
-import Sidebar from "../components/sidebar";
+import { Transaction } from "@/types/transaction";
 import Navbar from "../components/navbar";
+import Sidebar from "../components/sidebar";
+import Link from "next/link";
+import toast from "react-hot-toast";
 import ProtectedRoute from "../components/ProtectRoute";
-
-interface Transaction {
-  _id?: string;
-  client: string;
-  agent: string;
-  propertyRef: string;
-  price?: number;
-  status: "pending" | "complete" | "closed";
-}
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const getTransactions = async () => {
+  async function getTransactions() {
+    setLoading(true);
     try {
-      const res = await allTransactions();
-      if (Array.isArray(res.transactions)) {
-        setTransactions(res.transactions);
-      } else {
-        setTransactions([]);
-      }
-    } catch (error) {
+      const response = await allTransactions();
+      setTransactions(response.transactions || []);
+    } catch (err) {
       if (process.env.NODE_ENV !== "production") {
-        console.error("Error fetching transactions:", error);
+        console.error("Error occurred in fetching data:", err);
       }
-      toast.error("Failed to load transactions");
+      toast.error("Failed to fetch transactions");
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   useEffect(() => {
     getTransactions();
@@ -51,12 +40,12 @@ export default function TransactionsPage() {
       try {
         await deleteTransaction(id);
         setTransactions((prevTransactions) =>
-          prevTransactions.filter((transaction) => transaction._id !== id)
+          prevTransactions.filter((transaction) => id !== transaction._id)
         );
         toast.success("Transaction deleted successfully");
       } catch (error) {
         if (process.env.NODE_ENV !== "production") {
-          console.error("Error deleting transaction:", error);
+          console.error("Error occurred in deleting transaction", error);
         }
         toast.error("Failed to delete transaction");
       }
@@ -93,7 +82,7 @@ export default function TransactionsPage() {
                 <h1 className="text-3xl font-bold text-gray-800">
                   Transaction Records
                 </h1>
-                <Link href="/transactions/create">
+                <Link href="/transaction">
                   <button className="p-3 text-[20px] rounded-2xl bg-blue-700 cursor-pointer hover:bg-blue-800 text-white active:bg-blue-500">
                     Create Transaction
                   </button>
@@ -120,7 +109,7 @@ export default function TransactionsPage() {
               <h1 className="text-3xl font-bold text-gray-800">
                 Transaction Records
               </h1>
-              <Link href="/transactions/create">
+              <Link href="/transaction">
                 <button className="p-3 text-[20px] rounded-2xl bg-blue-700 cursor-pointer hover:bg-blue-800 text-white active:bg-blue-500">
                   Create Transaction
                 </button>
@@ -180,7 +169,7 @@ export default function TransactionsPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
-                        <Link href={`/transactions/create?id=${transaction._id || ''}`}>
+                        <Link href={`/transaction?id=${transaction._id || ''}`}>
                           <button className="text-white text-[15px] bg-blue-700 rounded-md p-2 m-1 border-none cursor-pointer active:bg-blue-600 hover:bg-blue-500">
                             Edit
                           </button>

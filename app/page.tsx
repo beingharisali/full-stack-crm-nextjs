@@ -38,10 +38,6 @@ export default function Home() {
       toast.error("Passwords do not match!");
       return;
     }
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters long!");
-      return;
-    }
     if (!role) {
       toast.error("Please select a role!");
       return;
@@ -50,8 +46,7 @@ export default function Home() {
     try {
       await registerUser(firstName, lastName, email, password, role as any);
     } catch (e: any) {
-      const errorMsg =
-        e.response?.data?.msg || e.message || "Registration failed";
+      const errorMsg = e.response?.data?.msg || "Registration failed";
       toast.error(errorMsg);
       if (process.env.NODE_ENV !== "production") {
         console.error("Registration failed:", e);
@@ -69,7 +64,7 @@ export default function Home() {
     try {
       await loginUser(email, password, role as any);
     } catch (e: any) {
-      const errorMsg = e.response?.data?.msg || e.message || "Login failed";
+      const errorMsg = e.response?.data?.msg || "Login failed";
       toast.error(errorMsg);
       if (process.env.NODE_ENV !== "production") {
         console.error("Login failed:", e);
@@ -92,7 +87,7 @@ export default function Home() {
                 : "Sign in to continue your journey"}
             </p>
           </div>
-
+          
           <CardHeader className="pt-6 pb-2">
             <CardTitle className="text-2xl font-bold text-center text-gray-800">
               {isRegistering ? "Sign Up" : "Sign In"}
@@ -139,7 +134,7 @@ export default function Home() {
                   </div>
                 </>
               )}
-
+              
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 flex items-center">
                   <Mail className="mr-2 h-4 w-4" />
@@ -158,7 +153,7 @@ export default function Home() {
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 </div>
               </div>
-
+              
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 flex items-center">
                   <Lock className="mr-2 h-4 w-4" />
@@ -188,7 +183,7 @@ export default function Home() {
                   </button>
                 </div>
               </div>
-
+              
               {isRegistering && (
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700 flex items-center">
@@ -208,9 +203,7 @@ export default function Home() {
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <button
                       type="button"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
                       {showConfirmPassword ? (
@@ -222,7 +215,7 @@ export default function Home() {
                   </div>
                 </div>
               )}
-
+              
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 flex items-center">
                   <Users className="mr-2 h-4 w-4" />
@@ -254,9 +247,7 @@ export default function Home() {
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="px-2 bg-white text-gray-500">
-                    {isRegistering
-                      ? "Already have an account?"
-                      : "New to our platform?"}
+                    {isRegistering ? "Already have an account?" : "New to our platform?"}
                   </span>
                 </div>
               </div>
@@ -273,7 +264,7 @@ export default function Home() {
             </form>
           </CardContent>
         </Card>
-
+        
         <div className="text-center mt-6 text-white/80">
           <p className="text-sm">© 2023 CRM System. All rights reserved.</p>
         </div>

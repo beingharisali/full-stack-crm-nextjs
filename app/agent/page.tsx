@@ -158,18 +158,11 @@ export default function AgentsPage() {
 								<h1 className="text-3xl font-bold text-gray-800">
 									Agent Listings 👨‍💼
 								</h1>
-								<div className="flex space-x-3">
-									<Link href="/properties/add">
-										<button className="p-3 text-[20px] rounded-2xl bg-green-700 cursor-pointer hover:bg-green-800 text-white active:bg-green-500">
-											Create Property
-										</button>
-									</Link>
-									<Link href="/agent/create">
-										<button className="p-3 text-[20px] rounded-2xl bg-blue-700 cursor-pointer hover:bg-blue-800 text-white active:bg-blue-500">
-											Create Agent
-										</button>
-									</Link>
-								</div>
+								<Link href="/agent/create">
+									<button className="p-3 text-[20px] rounded-2xl bg-blue-700 cursor-pointer hover:bg-blue-800 text-white active:bg-blue-500">
+										Create Agent
+									</button>
+								</Link>
 							</div>
 
 							<div className="overflow-x-auto shadow-xl rounded-lg">
