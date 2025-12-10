@@ -17,7 +17,7 @@ function Navbar() {
 			}
 		}
 	};
-	if (!tokenLoading && tokenData.role === "admin") {
+	if (!tokenLoading && tokenData && tokenData.role === "admin") {
 		return (
 			<header className="text9cls-gray-600 body-font">
 				<div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">

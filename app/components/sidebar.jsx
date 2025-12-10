@@ -1,8 +1,7 @@
-// components/sidebar.tsx
 import Link from "next/link";
-import React from "react";
 
-function Sidebar() {
+const Sidebar = () => {
+
 	return (
 		<div className="hidden md:flex flex-col w-64 bg-gray-800 rounded-2xl h-[80vh]">
 			<div className="flex flex-col flex-1 overflow-y-auto">
@@ -11,46 +10,40 @@ function Sidebar() {
 						<a
 							href="#"
 							className="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700">
-							{/* Dashboard icon */}
 							Dashboard
 						</a>
 					</div>
 					<div className="flex flex-col flex-1 gap-3">
-						<Link
-							href="/properties"
+						<a
+							href="#"
 							className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-400 hover:bg-opacity-25 rounded-2xl">
-							{/* Comments icon */}
-							Properties
-						</Link>
+							Home
+						</a>
 						<Link
 							href="/profile"
 							className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-400 hover:bg-opacity-25 rounded-2xl">
-							{/* Profile icon */}
 							Profile
 						</Link>
 						<a
 							href="/lead"
 							className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-400 hover:bg-opacity-25 rounded-2xl">
-							{/* Article icon */}
 							Lead
 						</a>
 						<a
 							href="/agent"
 							className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-400 hover:bg-opacity-25 rounded-2xl">
-							{/* Users icon */}
 							Agents
 						</a>
 						<Link
-							href="/transactions"
+							href="#"
 							className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-400 hover:bg-opacity-25 rounded-2xl">
-							{/* Comments icon */}
-							Transaction
+							Comments
 						</Link>
 					</div>
 				</nav>
 			</div>
 		</div>
 	);
-}
+};
 
 export default Sidebar;
