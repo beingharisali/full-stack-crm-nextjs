@@ -1,31 +1,36 @@
 "use client";
 
-import React from "react";
-import Navbar from "../components/navbar";
-import Sidebar from "../components/sidebar";
-import Link from "next/link";
 import { useTokenData } from "@/lib/token";
+import Sidebar from "../components/sidebar";
+import Navbar from "../components/navbar";
+import Link from "next/link";
 
-export default function WelcomeDashboard() {
+export default function Dashboard() {
 	const [tokenData, tokenLoading] = useTokenData();
 
 	if (tokenLoading) {
 		return (
-			<div className="flex items-center justify-center h-screen text-xl text-gray-600">
-				Loading dashboard...
+			<div className="h-screen flex items-center justify-center">
+				<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+			</div>
+		);
+	}
+
+	if (!tokenData) {
+		return (
+			<div className="h-screen flex flex-col items-center justify-center">
+				<h1 className="text-3xl font-semibold mb-4">🚫 Unauthorized</h1>
+				<p className="text-gray-600">Please log in to access the dashboard.</p>
 			</div>
 		);
 	}
 
 	if (tokenData?.role !== "admin") {
 		return (
-			<>
-				<Navbar />
-				<div className="h-screen flex flex-col items-center justify-center">
-					<h1 className="text-3xl font-semibold mb-4">🚫 Access Denied</h1>
-					<p className="text-gray-600">Only admins can access the dashboard.</p>
-				</div>
-			</>
+			<div className="h-screen flex flex-col items-center justify-center">
+				<h1 className="text-3xl font-semibold mb-4">🚫 Access Denied</h1>
+				<p className="text-gray-600">Only admins can access the dashboard.</p>
+			</div>
 		);
 	}
 
@@ -34,9 +39,6 @@ export default function WelcomeDashboard() {
 	return (
 		<div className="flex min-h-screen bg-gray-50">
 			<div className="flex-1 flex flex-col">
-				{/* Navbar */}
-				<Navbar />
-
 				{/* Sidebar + Main */}
 				<div className="flex grow">
 					<Sidebar />
