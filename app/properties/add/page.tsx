@@ -110,7 +110,7 @@ export default function AddPropertyPage() {
 		}
 	};
 	return (
-		<ProtectedRoute allowedRoles={["admin"]}>
+		<ProtectedRoute allowedRoles={["admin", "agent", "user"]}>
 			<>
 				<Link href={"/properties"}>
 					<button className="m-5 bg-blue-800 text-white px-3 py-2 rounded-md absolute">

@@ -7,7 +7,6 @@ import toast from "react-hot-toast";
 import { allTransactions, deleteTransaction } from "@/services/transaction.api";
 import { Transaction } from "@/types/transaction";
 
-import Navbar from "../components/navbar";
 import Sidebar from "../components/sidebar";
 import ProtectedRoute from "../components/ProtectRoute";
 
@@ -63,7 +62,6 @@ export default function TransactionsPage() {
   return (
     <ProtectedRoute allowedRoles={["admin"]}>
       <div className="min-h-screen flex flex-col">
-        <Navbar />
         <div className="flex flex-1">
           <Sidebar />
 

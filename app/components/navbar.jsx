@@ -3,11 +3,18 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useTokenData } from "@/lib/token";
 import LogoutModal from "@/components/LogoutModal";
+import { usePathname } from 'next/navigation';
 
 function Navbar() {
 	const { user, logoutUser } = useAuthContext();
 	const [tokenData, tokenLoading] = useTokenData();
 	const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+	const pathname = usePathname();
+
+	// Don't show navbar on login/register pages
+	if (pathname === '/' || pathname === '/register') {
+		return null;
+	}
 
 	const handleLogoutClick = () => {
 		setIsLogoutModalOpen(true);
@@ -64,9 +71,9 @@ function Navbar() {
 									Dashboard
 								</Link>
 								<Link
-									href={"/properties/property"}
+									href={"/properties"}
 									className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-200">
-									Client Panel
+									Properties
 								</Link>
 								<button className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-200">
 									Contact
@@ -123,7 +130,7 @@ function Navbar() {
 				<div className="container mx-auto px-4">
 					<div className="flex items-center justify-between h-16">
 						<Link
-							href={"/properties/property"}
+							href={"/properties"}
 							className="flex items-center space-x-2 group">
 							<div className="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg">
 								<svg
@@ -146,6 +153,11 @@ function Navbar() {
 						</Link>
 						
 						<nav className="hidden md:flex items-center space-x-1">
+							<Link
+								href={"/properties"}
+								className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-200">
+								Properties
+							</Link>
 							<button className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-200">
 								Home
 							</button>

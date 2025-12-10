@@ -1,6 +1,5 @@
 "use client ";
 import React from "react";
-import Navbar from "../components/navbar";
 import Sidebar from "../components/sidebar";
 import ProtectedRoute from "../components/ProtectRoute";
 
