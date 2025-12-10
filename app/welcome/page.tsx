@@ -2,7 +2,6 @@
 
 import { useTokenData } from "@/lib/token";
 import Sidebar from "../components/sidebar";
-import Navbar from "../components/navbar";
 import Link from "next/link";
 
 export default function Dashboard() {

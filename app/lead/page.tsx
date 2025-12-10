@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { allLead } from "@/services/lead.api";
 import Link from "next/link";
 import { useTokenData } from "@/lib/token";
-import Navbar from "../components/navbar";
+
 
 export default function LeadsPage() {
 	const [leads, setLeads] = useState<any[]>([]);
@@ -82,7 +82,6 @@ export default function LeadsPage() {
 	if (!tokenLoading && tokenData?.role !== "admin") {
 		return (
 			<>
-				<Navbar />
 				<div className="h-screen flex items-center justify-center">
 					<h1 className="text-3xl font-semibold text-gray-700">
 						Only Admin can access this page

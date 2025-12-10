@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { allProperties, deleteProperty } from "../../../services/property.api";
 import { Property } from "@/types/property";
-import Navbar from "../../components/navbar";
 import Sidebar from "../../components/sidebar";
 import Link from "next/link";
 
@@ -56,7 +55,6 @@ export default function Page() {
 	if (properties.length === 0) {
 		return (
 			<>
-				<Navbar />
 				<div className="flex justify-between">
 					<h1 className="text-3xl font-bold mb-6 text-gray-800">
 						Property Listings
@@ -78,7 +76,6 @@ export default function Page() {
 		<>
 			<div className="flex">
 				<div className="flex-1 flex flex-col">
-					<Navbar />
 					<div className="flex">
 						<Sidebar />
 						<div className="p-4 md:p-8 w-[80%]">

@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { useTokenData } from "@/lib/token";
 import Sidebar from "../components/sidebar";
 import ProtectedRoute from "../components/ProtectRoute";
+import { useAuthContext } from "../../context/AuthContext";
 
 interface Property {
 	_id: string;
@@ -24,6 +25,7 @@ export default function PropertiesPage() {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(1);
 	const [tokenData, tokenLoading] = useTokenData();
+	const { user } = useAuthContext();
 	const propertiesPerPage = 5;
 
 	const getProperties = async () => {
@@ -57,16 +59,6 @@ export default function PropertiesPage() {
 		setCurrentPage(pageNumber);
 	};
 	
-	if (tokenLoading === false) {
-		if (tokenData?.role !== "admin") {
-			return (
-				<div className="h-full flex items-center justify-center ">
-					<h1 className="text-3xl">Only Admin can access this page</h1>
-				</div>
-			);
-		}
-	}
-	
 	if (loading) {
 		return (
 			<div className="text-center p-8 text-xl font-semibold text-gray-500">
@@ -77,19 +69,21 @@ export default function PropertiesPage() {
 
 	if (properties.length === 0) {
 		return (
-			<div className="flex justify-between m-5">
-				<h1 className="text-3xl font-bold mb-6 text-gray-800">
-					Property Listings
-				</h1>
-				<Link href="/properties/add">
-					<button className="p-3 text-[20px] rounded-2xl bg-blue-700 cursor-pointer hover:bg-blue-800 text-white active:bg-blue-500">
-						Create Property
-					</button>
-				</Link>
-				<div className="text-center p-8 text-xl font-semibold text-gray-700">
-					No properties found.
+			<ProtectedRoute allowedRoles={["admin", "agent", "user"]}>
+				<div className="flex justify-between m-5">
+					<h1 className="text-3xl font-bold mb-6 text-gray-800">
+						Property Listings
+					</h1>
+					<Link href="/properties/add">
+						<button className="p-3 text-[20px] rounded-2xl bg-blue-700 cursor-pointer hover:bg-blue-800 text-white active:bg-blue-500">
+							Create Property
+						</button>
+					</Link>
+					<div className="text-center p-8 text-xl font-semibold text-gray-700">
+						No properties found.
+					</div>
 				</div>
-			</div>
+			</ProtectedRoute>
 		);
 	}
 	
@@ -140,7 +134,7 @@ export default function PropertiesPage() {
 	};
 
 	return (
-		<ProtectedRoute allowedRoles={["admin"]}>
+		<ProtectedRoute allowedRoles={["admin", "agent", "user"]}>
 			<div className="flex">
 				<div className="flex-1 flex flex-col">
 					<div className="flex mx-3">
@@ -223,32 +217,36 @@ export default function PropertiesPage() {
 													{property.createdBy}
 												</td>
 												<td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
-													{property.status === "pending" && (
+													{user?.role === "admin" && (
 														<>
+															{property.status === "pending" && (
+																<>
+																	<button
+																		onClick={() => handleApprove(property._id)}
+																		className="text-white text-[15px] bg-green-600 rounded-md p-2 m-1 border-none cursor-pointer active:bg-green-700 hover:bg-green-500">
+																		Approve
+																	</button>
+																	<button
+																		onClick={() => handleReject(property._id)}
+																		className="text-white text-[15px] bg-red-600 rounded-md p-2 m-1 border-none cursor-pointer active:bg-red-700 hover:bg-red-500">
+																		Reject
+																	</button>
+																</>
+															)}
+															<Link href={`/properties/${property._id}/edit`}>
+																<button className="text-white text-[15px] bg-blue-700 rounded-md p-2 m-1 border-none	cursor-pointer active:bg-blue-600 hover:bg-blue-500">
+																	Edit
+																</button>
+															</Link>
 															<button
-																onClick={() => handleApprove(property._id)}
-																className="text-white text-[15px] bg-green-600 rounded-md p-2 m-1 border-none cursor-pointer active:bg-green-700 hover:bg-green-500">
-																Approve
-															</button>
-															<button
-																onClick={() => handleReject(property._id)}
-																className="text-white text-[15px] bg-red-600 rounded-md p-2 m-1 border-none cursor-pointer active:bg-red-700 hover:bg-red-500">
-																Reject
+																onClick={() => {
+																	deleteProp(property._id);
+																}}
+																className="text-white text-[15px] bg-red-600 rounded-md p-2 m-1 border-none	cursor-pointer active:bg-red-600 hover:bg-red-500">
+																Delete
 															</button>
 														</>
 													)}
-													<Link href={`/properties/${property._id}/edit`}>
-														<button className="text-white text-[15px] bg-blue-700 rounded-md p-2 m-1 border-none	cursor-pointer active:bg-blue-600 hover:bg-blue-500">
-															Edit
-														</button>
-													</Link>
-													<button
-														onClick={() => {
-															deleteProp(property._id);
-														}}
-														className="text-white text-[15px] bg-red-600 rounded-md p-2 m-1 border-none	cursor-pointer active:bg-red-600 hover:bg-red-500">
-														Delete
-													</button>
 												</td>
 											</tr>
 										))}

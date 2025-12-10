@@ -11,7 +11,6 @@ import {
 import toast from "react-hot-toast";
 import { useTokenData } from "@/lib/token";
 import Sidebar from "../components/sidebar";
-import Navbar from "../components/navbar";
 import ProtectedRoute from "../components/ProtectRoute";
 
 interface Agent {
@@ -118,7 +117,6 @@ export default function AgentsPage() {
 	if (tokenLoading) {
 		return (
 			<>
-				<Navbar />
 				<div className="h-screen flex items-center justify-center">
 					<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
 				</div>
@@ -129,7 +127,6 @@ export default function AgentsPage() {
 	if (tokenData?.role !== "admin") {
 		return (
 			<>
-				<Navbar />
 				<div className="h-full flex items-center justify-center ">
 					<h1 className="text-3xl">Only Admin can access this page</h1>
 				</div>
@@ -140,7 +137,6 @@ export default function AgentsPage() {
 	if (loading) {
 		return (
 			<>
-				<Navbar />
 				<p className="text-center p-8">Loading agents...</p>
 			</>
 		);
@@ -150,7 +146,6 @@ export default function AgentsPage() {
 		<ProtectedRoute allowedRoles={["admin"]}>
 			<div className="flex">
 				<div className="flex-1 flex flex-col">
-					<Navbar />
 					<div className="flex mx-3">
 						<Sidebar />
 						<div className="p-4 md:p-8 w-full md:w-[80%]">

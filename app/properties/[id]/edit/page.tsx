@@ -131,7 +131,7 @@ export default function EditPropertyPage() {
 
 	if (fetching) {
 		return (
-			<ProtectedRoute allowedRoles={["admin"]}>
+			<ProtectedRoute allowedRoles={["admin", "agent", "user"]}>
 				<div className="flex justify-center items-center min-h-screen bg-gray-50">
 					<div className="text-lg">Loading property data...</div>
 				</div>
@@ -140,7 +140,7 @@ export default function EditPropertyPage() {
 	}
 
 	return (
-		<ProtectedRoute allowedRoles={["admin"]}>
+		<ProtectedRoute allowedRoles={["admin", "agent", "user"]}>
 			<>
 				<Link href={"/properties"}>
 					<button className="m-5 bg-blue-800 text-white px-3 py-2 rounded-md absolute">
