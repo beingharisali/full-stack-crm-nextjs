@@ -4,7 +4,14 @@ import React, { useEffect, useState } from "react";
 import { createLead } from "@/services/lead.api";
 import { allProperties } from "@/services/property.api";
 import { Property } from "@/types/property";
-import { Loader2, ArrowLeft, User, Mail, MessageSquare, Home } from "lucide-react";
+import {
+	Loader2,
+	ArrowLeft,
+	User,
+	Mail,
+	MessageSquare,
+	Home,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -79,7 +86,7 @@ export default function CreateLeadPage() {
 
 	return (
 		<ProtectedRoute allowedRoles={["admin"]}>
-			<div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-8 px-4">
+			<div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 py-8 px-4">
 				<div className="max-w-2xl mx-auto">
 					<div className="mb-8">
 						<Button
@@ -228,8 +235,8 @@ export default function CreateLeadPage() {
 
 					<div className="mt-6 text-center">
 						<p className="text-sm text-slate-500">
-							All fields marked with * are required. The lead will be assigned to
-							the selected property.
+							All fields marked with * are required. The lead will be assigned
+							to the selected property.
 						</p>
 					</div>
 				</div>

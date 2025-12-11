@@ -89,7 +89,31 @@ export default function Dashboard() {
 			});
 			const trendData = Object.entries(monthCounts)
 				.map(([month, count]) => ({ month, transactions: count }))
-				.sort((a, b) => new Date(a.month) - new Date(b.month));
+				.sort((a, b) => {
+					const monthOrder = [
+						"Jan",
+						"Feb",
+						"Mar",
+						"Apr",
+						"May",
+						"Jun",
+						"Jul",
+						"Aug",
+						"Sep",
+						"Oct",
+						"Nov",
+						"Dec",
+					];
+					const aParts = a.month.split(" ");
+					const bParts = b.month.split(" ");
+					const aMonth = monthOrder.indexOf(aParts[0]);
+					const bMonth = monthOrder.indexOf(bParts[0]);
+					const aYear = parseInt(aParts[1]);
+					const bYear = parseInt(bParts[1]);
+
+					if (aYear !== bYear) return aYear - bYear;
+					return aMonth - bMonth;
+				});
 			setTransactionTrendData(trendData.length > 0 ? trendData : []);
 		} catch (err) {
 			console.error("Failed to fetch dashboard data:", err);
