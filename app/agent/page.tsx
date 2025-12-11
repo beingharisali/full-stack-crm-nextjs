@@ -20,7 +20,7 @@ interface Agent {
 	isActive?: boolean;
 	assignedProperties?: any[];
 }
-
+export let agentCount = 0;
 export default function AgentsPage() {
 	const [agents, setAgents] = useState<Agent[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -141,6 +141,7 @@ export default function AgentsPage() {
 			</>
 		);
 	}
+	agentCount = agents.length;
 
 	return (
 		<ProtectedRoute allowedRoles={["admin"]}>
@@ -193,11 +194,12 @@ export default function AgentsPage() {
 													{agent.email}
 												</td>
 												<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-													<span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-														agent.isActive === false
-															? "bg-red-100 text-red-800"
-															: "bg-green-100 text-green-800"
-													}`}>
+													<span
+														className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+															agent.isActive === false
+																? "bg-red-100 text-red-800"
+																: "bg-green-100 text-green-800"
+														}`}>
 														{agent.isActive === false ? "Inactive" : "Active"}
 													</span>
 												</td>

@@ -5,7 +5,7 @@ import { allLead } from "@/services/lead.api";
 import Link from "next/link";
 import { useTokenData } from "@/lib/token";
 
-
+export let leadCount = 0;
 export default function LeadsPage() {
 	const [leads, setLeads] = useState<any[]>([]);
 	const [loading, setLoading] = useState(false);
@@ -90,7 +90,8 @@ export default function LeadsPage() {
 			</>
 		);
 	}
-
+	leadCount = leads.length;
+	console.log(leadCount);
 	return (
 		<div className="min-h-screen bg-gray-50 p-6">
 			<div className="max-w-7xl mx-auto">
