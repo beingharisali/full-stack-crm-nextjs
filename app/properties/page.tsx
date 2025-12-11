@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { deleteProperty, allProperties, approveProperty, rejectProperty } from "@/services/property.api";
+import {
+	deleteProperty,
+	allProperties,
+	approveProperty,
+	rejectProperty,
+} from "@/services/property.api";
 import toast from "react-hot-toast";
 import { useTokenData } from "@/lib/token";
 import Sidebar from "../components/sidebar";
@@ -18,6 +23,7 @@ interface Property {
 	status?: "approved" | "rejected" | "pending";
 	createdBy: string;
 }
+export let propertyCount = 0;
 
 export default function PropertiesPage() {
 	const [properties, setProperties] = useState<Property[]>([]);
@@ -53,12 +59,15 @@ export default function PropertiesPage() {
 
 	const indexOfLastProperty = currentPage * propertiesPerPage;
 	const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
-	const currentProperties = properties.slice(indexOfFirstProperty, indexOfLastProperty);
+	const currentProperties = properties.slice(
+		indexOfFirstProperty,
+		indexOfLastProperty
+	);
 
 	const handlePageChange = (pageNumber: number) => {
 		setCurrentPage(pageNumber);
 	};
-	
+
 	if (loading) {
 		return (
 			<div className="text-center p-8 text-xl font-semibold text-gray-500">
@@ -86,7 +95,8 @@ export default function PropertiesPage() {
 			</ProtectedRoute>
 		);
 	}
-	
+	propertyCount = properties.length;
+	console.log(propertyCount);
 	const deleteProp = async (id: string) => {
 		const isConfirmed = window.confirm(
 			"Are you sure you want to delete your property?"
@@ -203,13 +213,14 @@ export default function PropertiesPage() {
 													{property.city}
 												</td>
 												<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-													<span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-														property.status === "approved"
-															? "bg-green-100 text-green-800"
-															: property.status === "rejected"
-															? "bg-red-100 text-red-800"
-															: "bg-yellow-100 text-yellow-800"
-													}`}>
+													<span
+														className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+															property.status === "approved"
+																? "bg-green-100 text-green-800"
+																: property.status === "rejected"
+																? "bg-red-100 text-red-800"
+																: "bg-yellow-100 text-yellow-800"
+														}`}>
 														{property.status || "pending"}
 													</span>
 												</td>
