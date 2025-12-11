@@ -11,7 +11,7 @@ const LogoutModal = ({ isOpen, onClose, onConfirm }) => {
     }
   };
 
-  console.log("testing");
+
 
   return (
     <div 
