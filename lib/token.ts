@@ -9,6 +9,7 @@ interface DecodedToken {
 	userId: string;
 	password: string;
 	role: "admin" | "agent" | "user" | string;
+	exp?: number; 
 }
 
 export function useTokenData(): [DecodedToken | null, boolean] {
@@ -22,7 +23,11 @@ export function useTokenData(): [DecodedToken | null, boolean] {
 		if (token) {
 			try {
 				const data = jwtDecode<DecodedToken>(token);
-				setDecodedData(data);
+				if (data.exp && Date.now() >= data.exp * 1000) {
+					setDecodedData(null);
+				} else {
+					setDecodedData(data);
+				}
 			} catch (error) {
 				console.error("Error occurred in decoding the token:", error);
 				setDecodedData(null);
