@@ -30,8 +30,11 @@ http.interceptors.response.use(
 	(error) => {
 		if (error.response?.status === 401) {
 			if (typeof window !== "undefined") {
-				localStorage.removeItem("token");
-				window.location.href = "/";
+				const currentPath = window.location.pathname;
+				if (currentPath !== "/" && currentPath !== "/register") {
+					localStorage.removeItem("token");
+					window.location.href = "/";
+				}
 			}
 		}
 		return Promise.reject(error);

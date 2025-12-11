@@ -70,7 +70,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	    const token = localStorage.getItem("token");
 
 	    if (token) {
-	      await refreshProfile();
+	      try {
+	        await refreshProfile();
+	      } catch (error) {
+	        console.error("Error refreshing profile:", error);
+	      }
 	    }
 	    setLoading(false);
 	  })();
@@ -129,6 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const logoutUser = async () => {
 		await logoutApi();
 		setUser(null);
+		localStorage.removeItem("token");
 		router.replace("/");
 	};
 

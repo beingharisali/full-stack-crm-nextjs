@@ -24,14 +24,12 @@ export function useTokenData(): [DecodedToken | null, boolean] {
 			try {
 				const data = jwtDecode<DecodedToken>(token);
 				if (data.exp && Date.now() >= data.exp * 1000) {
-					localStorage.removeItem("token");
 					setDecodedData(null);
 				} else {
 					setDecodedData(data);
 				}
 			} catch (error) {
 				console.error("Error occurred in decoding the token:", error);
-				localStorage.removeItem("token");
 				setDecodedData(null);
 			}
 		} else {
