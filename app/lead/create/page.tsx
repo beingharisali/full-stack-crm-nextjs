@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { createLead } from "@/services/lead.api";
 import { allProperties } from "@/services/property.api";
-import { Property } from "@/types/property";
 import { Loader2, ArrowLeft, User, Mail, MessageSquare, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
