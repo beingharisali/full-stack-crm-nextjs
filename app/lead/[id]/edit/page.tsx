@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { createLead } from "@/services/lead.api";
+import { getSingleLead, updateLead } from "@/services/lead.api";
 import { allProperties } from "@/services/property.api";
 import {
   Loader2,
@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -23,11 +23,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import ProtectedRoute from "../../components/ProtectRoute";
+import ProtectedRoute from "../../../components/ProtectRoute";
 
-export default function CreateLeadPage() {
+export default function EditLeadPage() {
   const router = useRouter();
+  const params = useParams();
+  const { id } = params;
+
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [properties, setProperties] = useState<any[]>([]);
   const [form, setForm] = useState({
     name: "",
@@ -35,10 +39,34 @@ export default function CreateLeadPage() {
     message: "",
     propertyRef: "",
   });
-  console.log("testing");
+
   useEffect(() => {
-    getProperties();
-  }, []);
+    if (id) {
+      getLeadDetails();
+      getProperties();
+    }
+  }, [id]);
+
+  async function getLeadDetails() {
+    try {
+      const res = await getSingleLead(id as string);
+      const lead = res.lead;
+      setForm({
+        name: lead.name || "",
+        email: lead.email || "",
+        message: lead.message || "",
+        propertyRef: lead.propertyRef || "",
+      });
+    } catch (err) {
+      toast.error("Failed to load lead details");
+      if (process.env.NODE_ENV !== "production") {
+        console.error(err);
+      }
+      router.push("/lead");
+    } finally {
+      setFetching(false);
+    }
+  }
 
   async function getProperties() {
     try {
@@ -70,11 +98,11 @@ export default function CreateLeadPage() {
 
     setLoading(true);
     try {
-      await createLead(form);
-      toast.success("Lead submitted successfully!");
+      await updateLead(id as string, form);
+      toast.success("Lead updated successfully!");
       router.push("/lead");
     } catch (err) {
-      toast.error("Failed to submit lead");
+      toast.error("Failed to update lead");
       if (process.env.NODE_ENV !== "production") {
         console.error(err);
       }
@@ -82,6 +110,18 @@ export default function CreateLeadPage() {
       setLoading(false);
     }
   };
+  console.log("testing");
+
+  if (fetching) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-8 px-4 flex items-center justify-center">
+        <div className="flex items-center gap-3">
+          <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+          <span className="text-slate-600">Loading lead details...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <ProtectedRoute allowedRoles={["admin"]}>
@@ -98,11 +138,9 @@ export default function CreateLeadPage() {
             </Button>
             <div className="text-center">
               <h1 className="text-3xl font-bold text-slate-900 mb-2">
-                Create New Lead
+                Edit Lead
               </h1>
-              <p className="text-slate-600">
-                Fill in the details below to create a new lead
-              </p>
+              <p className="text-slate-600">Update the lead details below</p>
             </div>
           </div>
 
@@ -113,7 +151,7 @@ export default function CreateLeadPage() {
                 Lead Information
               </CardTitle>
               <CardDescription>
-                Enter the lead details and select the associated property
+                Update the lead details and select the associated property
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -229,23 +267,16 @@ export default function CreateLeadPage() {
                     {loading ? (
                       <>
                         <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                        Creating Lead...
+                        Updating Lead...
                       </>
                     ) : (
-                      "Create Lead"
+                      "Update Lead"
                     )}
                   </Button>
                 </div>
               </form>
             </CardContent>
           </Card>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-slate-500">
-              All fields marked with * are required. The lead will be assigned
-              to the selected property.
-            </p>
-          </div>
         </div>
       </div>
     </ProtectedRoute>
