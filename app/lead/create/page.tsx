@@ -35,7 +35,7 @@ export default function CreateLeadPage() {
     message: "",
     propertyRef: "",
   });
-
+  console.log("testing");
   useEffect(() => {
     getProperties();
   }, []);
