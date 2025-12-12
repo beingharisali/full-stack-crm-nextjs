@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/card";
 import ProtectedRoute from "../../../components/ProtectRoute";
 
+console.log("testing");
+
 export default function EditLeadPage() {
   const router = useRouter();
   const params = useParams();
