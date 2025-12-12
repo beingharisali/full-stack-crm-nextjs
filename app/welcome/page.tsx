@@ -4,6 +4,8 @@ import { useTokenData } from "@/lib/token";
 import Sidebar from "../components/sidebar";
 import Link from "next/link";
 import ProtectedRoute from "../components/ProtectRoute";
+import StatsWidget from "../components/StatsWidget";
+// import StatsBarChart from "../components/chart";
 
 export default function Dashboard() {
 	const [tokenData, tokenLoading] = useTokenData();
@@ -52,51 +54,8 @@ export default function Dashboard() {
 									Here’s your CRM overview and quick access tools.
 								</p>
 							</section>
-
-							<section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-								{[
-									{
-										label: "Total Leads",
-										value: 243,
-										color: "blue",
-										icon: "👥",
-									},
-									{
-										label: "Active Properties",
-										value: 120,
-										color: "green",
-										icon: "🏠",
-									},
-									{
-										label: "Closed Deals",
-										value: 58,
-										color: "purple",
-										icon: "💼",
-									},
-									{
-										label: "Pending Tasks",
-										value: 9,
-										color: "orange",
-										icon: "🕓",
-									},
-								].map((item) => (
-									<div
-										key={item.label}
-										className={`p-6 bg-white border-t-4 border-${item.color}-500 shadow rounded-xl`}>
-										<div className="flex justify-between items-center mb-2">
-											<span className="text-4xl">{item.icon}</span>
-											<span
-												className={`text-${item.color}-600 text-sm font-semibold uppercase`}>
-												{item.label}
-											</span>
-										</div>
-										<h2 className="text-3xl font-bold text-gray-800 mt-2">
-											{item.value}
-										</h2>
-									</div>
-								))}
-							</section>
-
+							<StatsWidget />
+							{/* <StatsBarChart /> */}
 							<section>
 								<h2 className="text-2xl font-semibold text-gray-800 mb-4">
 									Quick Access
