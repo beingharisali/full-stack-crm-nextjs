@@ -42,6 +42,8 @@ const Sidebar = () => {
 		},
 	];
 
+	console.log("testing");
+
 	return (
 		<div className="hidden md:flex flex-col w-64 bg-gradient-to-b from-gray-900 to-gray-800 border-r border-gray-700 sticky top-0 h-screen">
 			{/* Logo Section */}
