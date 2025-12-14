@@ -204,7 +204,7 @@ export default function StatsWidget({
 	}
 
 	return (
-		<div className="flex flex-col gap-6">
+		<div className="flex flex-col gap-6 w-full max-w-4xl mx-auto">
 			<div
 				className={`flex ${
 					layout === "horizontal" ? "flex-row gap-4" : "flex-col gap-4"
@@ -243,11 +243,11 @@ export default function StatsWidget({
 			</div>
 
 			{showChart && (
-				<div className="bg-white p-6 rounded-xl shadow-md">
-					<h3 className="text-xl font-semibold text-gray-800 mb-4">
+				<div className="bg-white p-4 rounded-xl shadow-md w-full">
+					<h3 className="text-lg font-semibold text-gray-800 mb-3">
 						Metrics Overview
 					</h3>
-					<div className="h-80">
+					<div className="h-64 w-full">
 						<Bar options={chartOptions} data={chartData} />
 					</div>
 				</div>
