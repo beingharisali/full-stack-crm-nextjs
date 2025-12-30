@@ -112,21 +112,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		}
 	};
 	const loginUser = async (email: string, password: string, role: UserRole) => {
-		const res = await loginApi(email, password, role as string);
+		try {
+			const res = await loginApi(email, password, role as string);
+			
+			if (res.token) {
+				localStorage.setItem("token", res.token);
+			}
 
-		if (res.token) {
-			localStorage.setItem("token", res.token);
-		}
-
-		if (res.user) {
-			setUser(res.user);
-			if (res.user.role) {
-				router.replace(getRedirectPath(res.user.role));
+			if (res.user) {
+				setUser(res.user);
+				if (res.user.role) {
+					router.replace(getRedirectPath(res.user.role));
+				} else {
+					router.replace(getRedirectPath());
+				}
 			} else {
 				router.replace(getRedirectPath());
 			}
-		} else {
-			router.replace(getRedirectPath());
+		} catch (error) {
+			// Re-throw the error so it can be handled by the calling function
+			throw error;
 		}
 	};
 

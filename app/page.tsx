@@ -56,6 +56,7 @@ export default function Home() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!email || !password) {
       toast.error("Email and password are required!");
       return;
@@ -64,8 +65,19 @@ export default function Home() {
     try {
       await loginUser(email, password, role as any);
     } catch (e: any) {
-      const errorMsg = e.response?.data?.msg || "Login failed";
+      // Extract error message from different possible sources
+      let errorMsg = "Login failed";
+      
+      if (e.response?.data?.msg) {
+        errorMsg = e.response.data.msg;
+      } else if (e.response?.data?.message) {
+        errorMsg = e.response.data.message;
+      } else if (e.message) {
+        errorMsg = e.message;
+      }
+      
       toast.error(errorMsg);
+      
       if (process.env.NODE_ENV !== "production") {
         console.error("Login failed:", e);
       }
